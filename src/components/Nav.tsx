@@ -15,11 +15,11 @@ export default function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-10">
+    <nav className="sticky top-0 z-20 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-2xl items-center gap-0.5 px-4 h-12 overflow-x-auto">
         <Link
           href="/dashboard"
-          className="mr-3 text-sm font-semibold text-slate-100 shrink-0 tracking-tight"
+          className="mr-3 text-sm font-semibold tracking-tight text-slate-100 shrink-0"
         >
           Pulse
         </Link>
@@ -30,10 +30,10 @@ export default function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 ${
                 active
-                  ? "bg-emerald-950/60 text-emerald-300"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "bg-emerald-950/50 text-emerald-300 ring-1 ring-inset ring-emerald-500/15"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
               {link.label}

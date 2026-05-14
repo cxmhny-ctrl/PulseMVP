@@ -17,9 +17,9 @@ const styleOptions = [
 ];
 
 const sensitivityOptions = [
-  { value: "low", label: "Low — fewer nudges" },
-  { value: "medium", label: "Medium — balanced" },
-  { value: "high", label: "High — more check-ins" },
+  { value: "low", label: "Low \u2014 fewer nudges" },
+  { value: "medium", label: "Medium \u2014 balanced" },
+  { value: "high", label: "High \u2014 more check-ins" },
 ];
 
 export default function Settings() {
@@ -80,60 +80,69 @@ export default function Settings() {
     }
   }
 
-  if (loading) return <LoadingState message="Loading settings…" />;
+  if (loading) return <LoadingState message="Loading settings\u2026" />;
   if (error && supportStyle === "gentle" && sensitivity === "medium")
     return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto animate-fade-in">
       <h1 className="text-xl font-semibold text-slate-100 mb-6">
         Settings
       </h1>
 
       <Card>
         <div className="space-y-5">
-          <Select
-            label="Support style"
-            options={styleOptions}
-            value={supportStyle}
-            onChange={(e) => setSupportStyle(e.target.value)}
-          />
-
-          <Select
-            label="Stuck sensitivity"
-            options={sensitivityOptions}
-            value={sensitivity}
-            onChange={(e) => setSensitivity(e.target.value)}
-          />
-
-          <div className="flex gap-4">
-            <Input
-              label="Quiet hours start"
-              type="time"
-              value={quietStart}
-              onChange={(e) => setQuietStart(e.target.value)}
+          {/* Tone section */}
+          <div className="space-y-4 pb-5 border-b border-slate-800/60">
+            <Select
+              label="Support style"
+              options={styleOptions}
+              value={supportStyle}
+              onChange={(e) => setSupportStyle(e.target.value)}
             />
-            <Input
-              label="Quiet hours end"
-              type="time"
-              value={quietEnd}
-              onChange={(e) => setQuietEnd(e.target.value)}
+            <Select
+              label="Stuck sensitivity"
+              options={sensitivityOptions}
+              value={sensitivity}
+              onChange={(e) => setSensitivity(e.target.value)}
             />
           </div>
 
-          <p className="text-xs text-slate-500">
-            Channel: in-app only. SMS, notifications, and widgets coming later.
-          </p>
+          {/* Quiet hours section */}
+          <div className="space-y-4 pb-5 border-b border-slate-800/60">
+            <div>
+              <p className="text-sm font-medium text-slate-300">
+                Quiet hours
+              </p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Pulse won&apos;t send nudges during these hours.
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Input
+                label="Start"
+                type="time"
+                value={quietStart}
+                onChange={(e) => setQuietStart(e.target.value)}
+              />
+              <Input
+                label="End"
+                type="time"
+                value={quietEnd}
+                onChange={(e) => setQuietEnd(e.target.value)}
+              />
+            </div>
+          </div>
 
           {saved && (
-            <p className="text-sm text-emerald-400 font-medium">
+            <p className="text-sm font-medium text-emerald-400">
               Settings saved.
             </p>
           )}
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-1">
             <Button onClick={handleSave} disabled={saving} className="flex-1">
-              {saving ? "Saving…" : "Save settings"}
+              {saving ? "Saving\u2026" : "Save settings"}
             </Button>
             <Button variant="secondary" onClick={() => router.push("/dashboard")}>
               Back

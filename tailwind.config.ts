@@ -37,8 +37,12 @@ const config: Config = {
         ],
       },
       animation: {
-        "fade-in": "fadeIn 0.3s ease-out",
-        "slide-up": "slideUp 0.3s ease-out",
+        "fade-in": "fadeIn 0.5s ease-out",
+        "slide-up": "slideUp 0.5s ease-out",
+        "breathe": "breathe 3s ease-in-out infinite",
+        "pulse-ring": "pulseRing 2.5s cubic-bezier(0.32, 0.72, 0, 1) infinite",
+        "glow": "glow 4s ease-in-out infinite",
+        "enter": "enter 0.6s cubic-bezier(0.32, 0.72, 0, 1) both",
       },
       keyframes: {
         fadeIn: {
@@ -48,6 +52,22 @@ const config: Config = {
         slideUp: {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        breathe: {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
+        pulseRing: {
+          "0%": { transform: "scale(0.8)", opacity: "0.6" },
+          "100%": { transform: "scale(2)", opacity: "0" },
+        },
+        glow: {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.7" },
+        },
+        enter: {
+          "0%": { opacity: "0", transform: "translateY(12px) scale(0.98)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
         },
       },
     },

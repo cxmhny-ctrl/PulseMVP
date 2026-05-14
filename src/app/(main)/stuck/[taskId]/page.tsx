@@ -12,7 +12,7 @@ import { formatLabel } from "@/lib/labels";
 type Stage = "intake" | "generating" | "result" | "done";
 
 const frictionOptions = [
-  { value: "", label: "— or pick one —" },
+  { value: "", label: "\u2014 or pick one \u2014" },
   { value: "too_vague", label: "Too vague" },
   { value: "too_large", label: "Too large" },
   { value: "unclear_first_step", label: "Unclear first step" },
@@ -115,116 +115,160 @@ export default function StuckMode() {
     }
   }
 
-  if (!taskTitle && !error) return <LoadingState message="Loading task…" />;
+  if (!taskTitle && !error) return <LoadingState message="Loading task\u2026" />;
   if (error && stage === "intake") return <ErrorState message={error} onRetry={loadTask} />;
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-xl font-semibold text-slate-100 mb-2">
-        Stuck Mode
-      </h1>
-      <p className="text-sm text-slate-400 mb-6">
-        {taskTitle}
-      </p>
+    <div className="max-w-md mx-auto animate-fade-in">
+      {/* Task context banner */}
+      <div className="mb-6">
+        <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-2">
+          Stuck on
+        </p>
+        <h1 className="text-lg font-semibold text-slate-200">
+          {taskTitle}
+        </h1>
+      </div>
 
-      <Card>
-        {stage === "intake" && (
-          <div className="space-y-5">
-            <p className="text-sm font-medium text-slate-300">
-              What feels stuck?
-            </p>
-            <textarea
-              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500/50 focus:outline-none focus:ring-0 resize-none"
-              rows={2}
-              placeholder="Describe what's blocking you (optional)"
-              value={stuckDescription}
-              onChange={(e) => setStuckDescription(e.target.value)}
-            />
-            <Select
-              label="Friction type"
-              options={frictionOptions}
-              value={frictionType}
-              onChange={(e) => setFrictionType(e.target.value)}
-            />
-            <Button onClick={handleGenerate} className="w-full">
-              Find my next step
-            </Button>
-          </div>
-        )}
+      {/* Ambient pulse accent behind the card */}
+      <div className="relative">
+        <div className="pointer-events-none absolute -inset-4 flex items-center justify-center opacity-30">
+          <div className="h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/[0.06]" style={{ animationDelay: "0s" }} />
+          <div className="absolute h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/[0.04]" style={{ animationDelay: "0.8s" }} />
+        </div>
 
-        {stage === "generating" && (
-          <LoadingState message="Finding your next tiny step…" />
-        )}
-
-        {stage === "result" && step && (
-          <div className="space-y-5">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Next step
+        <Card className="relative">
+          {stage === "intake" && (
+            <div className="space-y-5">
+              <p className="text-sm font-medium text-slate-300">
+                What feels stuck?
               </p>
-              <p className="mt-1 text-lg font-semibold text-slate-100">
-                {showEasier ? step.easierVersion : step.nextStep}
-              </p>
+              <textarea
+                className="w-full rounded-xl border border-slate-800/60 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500/40 focus:outline-none focus:ring-0 resize-none"
+                rows={2}
+                placeholder="Describe what\u2019s blocking you (optional)"
+                value={stuckDescription}
+                onChange={(e) => setStuckDescription(e.target.value)}
+              />
+              <Select
+                label="Friction type"
+                options={frictionOptions}
+                value={frictionType}
+                onChange={(e) => setFrictionType(e.target.value)}
+              />
+              <Button onClick={handleGenerate} className="w-full">
+                Find my next step
+              </Button>
             </div>
+          )}
 
-            <div className="flex items-center gap-4 text-xs text-slate-400">
-              <span>~{step.estimatedMinutes} min</span>
-              <span>&middot;</span>
-              <span>{formatLabel(step.frictionType)}</span>
+          {stage === "generating" && (
+            <div className="py-8">
+              <div className="flex flex-col items-center gap-5">
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute h-16 w-16 animate-pulse-ring rounded-full bg-emerald-400/15" style={{ animationDelay: "0s" }} />
+                  <div className="absolute h-16 w-16 animate-pulse-ring rounded-full bg-emerald-400/10" style={{ animationDelay: "0.6s" }} />
+                  <div className="h-6 w-6 rounded-full bg-emerald-400 animate-breathe" />
+                </div>
+                <p className="text-sm text-slate-400">
+                  Finding your next tiny step\u2026
+                </p>
+              </div>
             </div>
+          )}
 
-            {!showEasier && (
-              <div className="flex flex-col gap-2">
-                <Button onClick={() => handleOutcome("started")} className="w-full">
-                  Start
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => handleOutcome("easier_version")}
-                >
-                  Easier version
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleOutcome("not_now")}
-                >
-                  Not now
-                </Button>
+          {stage === "result" && step && (
+            <div className="space-y-6">
+              {/* Next step hero */}
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-[0.2em] text-emerald-400/70 mb-3">
+                  {showEasier ? "Easier version" : "Your next step"}
+                </p>
+                <p className="text-xl font-semibold leading-relaxed text-slate-100 text-balance">
+                  {showEasier ? step.easierVersion : step.nextStep}
+                </p>
               </div>
-            )}
 
-            {showEasier && (
-              <div className="flex flex-col gap-2">
-                <Button onClick={() => handleOutcome("started")} className="w-full">
-                  Start easier version
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowEasier(false)}
-                >
-                  Go back
-                </Button>
+              {/* Meta row */}
+              <div className="flex items-center justify-center gap-3 text-xs text-slate-500">
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60" />
+                  ~{step.estimatedMinutes} min
+                </span>
+                {step.frictionType && (
+                  <>
+                    <span className="text-slate-700">&middot;</span>
+                    <span>{formatLabel(step.frictionType)}</span>
+                  </>
+                )}
               </div>
-            )}
-          </div>
-        )}
 
-        {stage === "done" && (
-          <div className="space-y-4 text-center">
-            <p className="text-lg font-medium text-slate-100">
-              Starting a 2-minute pulse.
-            </p>
-            <p className="text-sm text-slate-400">
-              Stop when the timer ends.
-            </p>
-            <Button onClick={() => router.push("/dashboard")} variant="secondary">
-              Back to dashboard
-            </Button>
-          </div>
-        )}
+              {/* Actions */}
+              {!showEasier && (
+                <div className="space-y-2">
+                  <Button onClick={() => handleOutcome("started")} className="w-full">
+                    Start
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleOutcome("easier_version")}
+                    className="w-full"
+                  >
+                    Easier version
+                  </Button>
+                  <button
+                    onClick={() => handleOutcome("not_now")}
+                    className="w-full py-2 text-xs text-slate-500 hover:text-slate-400 transition-colors duration-200"
+                  >
+                    Not now
+                  </button>
+                </div>
+              )}
 
-        {error && stage !== "intake" && <ErrorState message={error} />}
-      </Card>
+              {showEasier && (
+                <div className="space-y-2">
+                  <Button onClick={() => handleOutcome("started")} className="w-full">
+                    Start easier version
+                  </Button>
+                  <button
+                    onClick={() => setShowEasier(false)}
+                    className="w-full py-2 text-xs text-slate-500 hover:text-slate-400 transition-colors duration-200"
+                  >
+                    Go back
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {stage === "done" && (
+            <div className="space-y-5 text-center">
+              <div className="flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute h-20 w-20 animate-pulse-ring rounded-full bg-emerald-400/15" style={{ animationDelay: "0s" }} />
+                  <div className="absolute h-20 w-20 animate-pulse-ring rounded-full bg-emerald-400/10" style={{ animationDelay: "0.6s" }} />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-950/60 ring-1 ring-inset ring-emerald-500/20">
+                    <span className="text-lg text-emerald-400">&rarr;</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="text-lg font-medium text-slate-100">
+                  Started
+                </p>
+                <p className="mt-1 text-sm text-slate-400">
+                  You\u2019re doing it. Come back when you\u2019re ready.
+                </p>
+              </div>
+              <Button onClick={() => router.push("/dashboard")} variant="secondary">
+                Back to dashboard
+              </Button>
+            </div>
+          )}
+
+          {error && stage !== "intake" && <ErrorState message={error} />}
+        </Card>
+      </div>
     </div>
   );
 }

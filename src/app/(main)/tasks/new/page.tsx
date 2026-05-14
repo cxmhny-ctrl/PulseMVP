@@ -66,52 +66,62 @@ export default function NewTask() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-xl font-semibold text-slate-100 mb-6 text-center">
+    <div className="max-w-md mx-auto animate-fade-in">
+      <h1 className="text-xl font-semibold text-slate-100 mb-6">
         New task
       </h1>
+
       <Card>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input
-            label="What do you want to start?"
-            placeholder="e.g. Clean kitchen"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            error={error ?? undefined}
-          />
-
-          <Select
-            label="How much energy does it need?"
-            options={energyOptions}
-            value={energy}
-            onChange={(e) => setEnergy(e.target.value)}
-          />
-
-          <div className="flex gap-4">
+        <form onSubmit={handleSubmit}>
+          {/* What section */}
+          <div className="space-y-4 pb-5 border-b border-slate-800/60">
             <Input
-              label="Start time"
-              type="datetime-local"
-              autoComplete="off"
-              value={scheduledStart}
-              onChange={(e) => setScheduledStart(e.target.value)}
+              label="What do you want to start?"
+              placeholder="e.g. Clean kitchen"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              error={error ?? undefined}
             />
-            <Input
-              label="End time"
-              type="datetime-local"
-              autoComplete="off"
-              value={scheduledEnd}
-              onChange={(e) => setScheduledEnd(e.target.value)}
+            <Select
+              label="How much energy does it need?"
+              options={energyOptions}
+              value={energy}
+              onChange={(e) => setEnergy(e.target.value)}
             />
           </div>
 
-          <p className="text-xs text-slate-500">
-            Channel: in-app only for now. SMS, notifications, and widgets
-            coming later.
-          </p>
+          {/* Optional scheduling section */}
+          <div className="space-y-3 py-5 border-b border-slate-800/60">
+            <div>
+              <p className="text-sm font-medium text-slate-300">
+                Scheduling
+              </p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Optional. Pulse won&apos;t nudge you outside this window.
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Input
+                label="Start time"
+                type="datetime-local"
+                autoComplete="off"
+                value={scheduledStart}
+                onChange={(e) => setScheduledStart(e.target.value)}
+              />
+              <Input
+                label="End time"
+                type="datetime-local"
+                autoComplete="off"
+                value={scheduledEnd}
+                onChange={(e) => setScheduledEnd(e.target.value)}
+              />
+            </div>
+          </div>
 
-          <div className="flex gap-3 pt-2">
+          {/* Actions */}
+          <div className="pt-5 flex gap-3">
             <Button type="submit" disabled={saving} className="flex-1">
-              {saving ? "Creating…" : "Create task"}
+              {saving ? "Creating\u2026" : "Create task"}
             </Button>
             <Button
               type="button"
@@ -123,6 +133,10 @@ export default function NewTask() {
           </div>
         </form>
       </Card>
+
+      <p className="mt-6 text-center text-xs text-slate-600">
+        Channel: in-app only for now. SMS, notifications, and widgets coming later.
+      </p>
     </div>
   );
 }

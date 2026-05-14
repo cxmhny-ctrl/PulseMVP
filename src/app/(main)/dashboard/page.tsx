@@ -74,12 +74,12 @@ export default function Dashboard() {
     load();
   }, []);
 
-  if (loading) return <LoadingState message="Loading dashboard…" />;
+  if (loading) return <LoadingState message="Loading dashboard\u2026" />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="animate-fade-in">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold text-slate-100">
           Dashboard
         </h1>
@@ -88,20 +88,24 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {wai !== null && (
-        <Card className="border-emerald-900/40 bg-emerald-950/40">
-          <div className="flex items-center gap-3">
-            <span className="flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
-            </span>
-            <p className="text-sm text-slate-200">
-              <span className="font-semibold text-emerald-300">{wai}</span>{" "}
-              intervention{wai !== 1 ? "s" : ""} this week
+      {/* Pulse status module */}
+      <Card className="mb-6 relative overflow-hidden">
+        {/* Subtle inner glow */}
+        <div className="pointer-events-none absolute -top-8 right-0 h-32 w-64 rounded-full bg-emerald-500/[0.03] blur-3xl" />
+        <div className="relative flex items-center gap-4">
+          <span className="pulse-indicator shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-slate-200">
+              Pulse is active
+            </p>
+            <p className="mt-0.5 text-xs text-slate-400">
+              {wai !== null
+                ? `${wai} intervention${wai !== 1 ? "s" : ""} this week`
+                : "Monitoring for stuck moments"}
             </p>
           </div>
-        </Card>
-      )}
+        </div>
+      </Card>
 
       {tasks.length === 0 ? (
         <EmptyState
@@ -122,8 +126,8 @@ export default function Dashboard() {
                   <h3 className="font-medium text-slate-100 truncate">
                     {task.title}
                   </h3>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                    <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-medium text-slate-400">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="inline-flex items-center rounded-full bg-slate-800/60 px-2.5 py-0.5 text-xs font-medium text-slate-400 ring-1 ring-inset ring-slate-700/40">
                       {formatLabel(task.energyRequired)}
                     </span>
                     {task.currentNextStep && (
