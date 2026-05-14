@@ -34,11 +34,10 @@ export default function Settings() {
   const [saved, setSaved] = useState(false);
 
   async function load() {
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const res = await fetch("/api/me");
-      if (!res.ok) throw new Error("Failed to load");
+      if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       if (data.settings) {
         setSupportStyle(data.settings.supportStyle ?? "gentle");
@@ -46,117 +45,61 @@ export default function Settings() {
         setQuietStart(data.settings.quietHoursStart ?? "22:00");
         setQuietEnd(data.settings.quietHoursEnd ?? "08:00");
       }
-    } catch {
-      setError("Could not load settings.");
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError("Could not load settings."); }
+    finally { setLoading(false); }
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   async function handleSave() {
-    setSaving(true);
-    setSaved(false);
+    setSaving(true); setSaved(false);
     try {
       const res = await fetch("/api/me", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          supportStyle,
-          stuckSensitivity: sensitivity,
-          quietHoursStart: quietStart,
-          quietHoursEnd: quietEnd,
-        }),
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ supportStyle, stuckSensitivity: sensitivity, quietHoursStart: quietStart, quietHoursEnd: quietEnd }),
       });
-      if (!res.ok) throw new Error("Failed to save");
-      setSaved(true);
-    } catch {
-      setError("Could not save settings.");
-    } finally {
-      setSaving(false);
-    }
+      if (!res.ok) throw new Error("Failed"); setSaved(true);
+    } catch { setError("Could not save settings."); }
+    finally { setSaving(false); }
   }
 
   if (loading) return <LoadingState message="Loading settings\u2026" />;
-  if (error && supportStyle === "gentle" && sensitivity === "medium")
-    return <ErrorState message={error} onRetry={load} />;
+  if (error && supportStyle === "gentle" && sensitivity === "medium") return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="max-w-lg mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-charcoal-900 mb-1">
-        Settings
-      </h1>
-      <p className="text-sm text-charcoal-500 mb-6">
-        Tune how Pulse checks in.
-      </p>
+    <div className="max-w-xl mx-auto animate-fade-in">
+      <p className="text-xs uppercase tracking-[0.2em] text-charcoal-500 mb-1">Settings</p>
+      <p className="text-sm text-charcoal-500 mb-6">Tune how Pulse checks in.</p>
 
       <Card>
-        <div className="space-y-5">
-          {/* Tone section */}
-          <div className="space-y-4 pb-5 border-b border-charcoal-100">
-            <Select
-              label="Support style"
-              options={styleOptions}
-              value={supportStyle}
-              onChange={(e) => setSupportStyle(e.target.value)}
-            />
-            <Select
-              label="Stuck sensitivity"
-              options={sensitivityOptions}
-              value={sensitivity}
-              onChange={(e) => setSensitivity(e.target.value)}
-            />
+        <div className="space-y-6">
+          <div className="space-y-4 pb-6 border-b border-charcoal-100">
+            <Select label="Support style" options={styleOptions} value={supportStyle} onChange={(e) => setSupportStyle(e.target.value)} />
+            <Select label="Stuck sensitivity" options={sensitivityOptions} value={sensitivity} onChange={(e) => setSensitivity(e.target.value)} />
           </div>
 
-          {/* Quiet hours section */}
-          <div className="space-y-4 pb-5 border-b border-charcoal-100">
+          <div className="space-y-4 pb-6 border-b border-charcoal-100">
             <div>
-              <p className="text-sm font-medium text-charcoal-900">
-                Quiet hours
-              </p>
-              <p className="mt-0.5 text-xs text-charcoal-500">
-                Pulse won&apos;t send nudges during these hours.
-              </p>
+              <p className="text-sm font-medium text-charcoal-900">Quiet hours</p>
+              <p className="mt-0.5 text-xs text-charcoal-500">Pulse won&rsquo;t send nudges during these hours.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Start"
-                type="time"
-                value={quietStart}
-                onChange={(e) => setQuietStart(e.target.value)}
-              />
-              <Input
-                label="End"
-                type="time"
-                value={quietEnd}
-                onChange={(e) => setQuietEnd(e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <Input label="Start" type="time" value={quietStart} onChange={(e) => setQuietStart(e.target.value)} />
+              <Input label="End" type="time" value={quietEnd} onChange={(e) => setQuietEnd(e.target.value)} />
             </div>
           </div>
 
-          {saved && (
-            <p className="text-sm font-medium text-sage">
-              Settings saved.
-            </p>
-          )}
+          {saved && <p className="text-sm font-medium text-sage">Settings saved.</p>}
 
           <div className="flex gap-3 pt-1">
-            <Button onClick={handleSave} disabled={saving} className="flex-1">
-              {saving ? "Saving\u2026" : "Save settings"}
-            </Button>
-            <Button variant="secondary" onClick={() => router.push("/dashboard")}>
-              Back
-            </Button>
+            <Button onClick={handleSave} disabled={saving} className="flex-1">{saving ? "Saving\u2026" : "Save settings"}</Button>
+            <Button variant="secondary" onClick={() => router.push("/dashboard")}>Back</Button>
           </div>
         </div>
       </Card>
 
       <p className="mt-8 text-center text-xs text-charcoal-500">
-        Pulse is a support tool, not a medical device or crisis service.
-        If you&apos;re in crisis, contact a qualified professional.
+        Pulse is a support tool, not a medical device or crisis service. If you&rsquo;re in crisis, contact a qualified professional.
       </p>
     </div>
   );

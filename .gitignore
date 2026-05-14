@@ -39,6 +39,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# screenshots
+/screenshots
+
 # prisma
 prisma/dev.db
 prisma/dev.db-journal

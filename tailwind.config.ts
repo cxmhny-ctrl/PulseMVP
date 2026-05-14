@@ -42,9 +42,9 @@ const config: Config = {
           hover: "#6E9DC0",
         },
         depth: {
-          DEFAULT: "#3A3532",
-          surface: "#423D39",
-          border: "#5C5651",
+          DEFAULT: "#1E1C1A",
+          surface: "#2A2724",
+          border: "#403D39",
         },
       },
       fontFamily: {
@@ -66,42 +66,14 @@ const config: Config = {
         "pulse-ring": "pulseRing 2.5s cubic-bezier(0.32, 0.72, 0, 1) infinite",
         glow: "glow 4s ease-in-out infinite",
         enter: "enter 0.6s cubic-bezier(0.32, 0.72, 0, 1) both",
-        "orb-outer": "orbOuter 6s linear infinite",
-        "orb-inner": "orbInner 4s ease-in-out infinite alternate",
       },
       keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        breathe: {
-          "0%, 100%": { opacity: "0.6" },
-          "50%": { opacity: "1" },
-        },
-        pulseRing: {
-          "0%": { transform: "scale(0.8)", opacity: "0.5" },
-          "100%": { transform: "scale(2.2)", opacity: "0" },
-        },
-        glow: {
-          "0%, 100%": { opacity: "0.3" },
-          "50%": { opacity: "0.6" },
-        },
-        enter: {
-          "0%": { opacity: "0", transform: "translateY(12px) scale(0.98)" },
-          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
-        },
-        orbOuter: {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" },
-        },
-        orbInner: {
-          "0%": { transform: "scale(0.85)", opacity: "0.4" },
-          "100%": { transform: "scale(1.05)", opacity: "0.7" },
-        },
+        fadeIn: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        slideUp: { "0%": { opacity: "0", transform: "translateY(8px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        breathe: { "0%, 100%": { opacity: "0.6" }, "50%": { opacity: "1" } },
+        pulseRing: { "0%": { transform: "scale(0.8)", opacity: "0.5" }, "100%": { transform: "scale(2.2)", opacity: "0" } },
+        glow: { "0%, 100%": { opacity: "0.3" }, "50%": { opacity: "0.6" } },
+        enter: { "0%": { opacity: "0", transform: "translateY(12px) scale(0.98)" }, "100%": { opacity: "1", transform: "translateY(0) scale(1)" } },
       },
     },
   },

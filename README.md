@@ -36,6 +36,24 @@ Open **[http://localhost:3000](http://localhost:3000)**.
 | `npx tsx scripts/test-ai-provider.ts` | Run AI provider unit tests |
 | `npx tsx scripts/smoke-test-core-loop.ts` | Run full vertical slice test |
 | `npx tsx scripts/reset-demo-data.ts` | Clear and reseed demo data |
+| `npx tsx scripts/capture-screenshots.ts` | Capture design-review screenshots |
+
+## Design screenshot capture
+
+1. Run `npm run dev` in one terminal
+2. In another terminal run `npx tsx scripts/capture-screenshots.ts`
+3. Open the `screenshots/` folder
+
+Screenshots are captured at 1440x1000 viewport for:
+- `/` (landing page)
+- `/dashboard`
+- `/tasks/new`
+- `/stuck/[taskId]` (auto-creates a task if needed)
+- `/summary`
+- `/interventions`
+- `/settings`
+
+Requires `@playwright/test` and Chromium browser (`npx playwright install chromium`).
 
 ## Demo flow
 
