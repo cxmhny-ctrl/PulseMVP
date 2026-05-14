@@ -33,21 +33,40 @@ export default function Dashboard() {
   async function load() {
     setLoading(true);
     setError(null);
-    try {
-      const [tRes, sRes] = await Promise.all([
-        fetch("/api/tasks"),
-        fetch("/api/summaries/weekly/current"),
-      ]);
-      if (!tRes.ok || !sRes.ok) throw new Error("Failed to load");
-      const tData = await tRes.json();
-      const sData = await sRes.json();
-      setTasks(tData.filter((t: Task) => t.status === "active"));
-      setWai(sData.weeklyActiveInterventions);
-    } catch {
+
+    const results = await Promise.allSettled([
+      fetch("/api/tasks"),
+      fetch("/api/summaries/weekly/current"),
+    ]);
+
+    const tRes = results[0].status === "fulfilled" ? results[0].value : null;
+    const sRes = results[1].status === "fulfilled" ? results[1].value : null;
+
+    if (!tRes && !sRes) {
       setError("Could not load dashboard.");
-    } finally {
       setLoading(false);
+      return;
     }
+
+    if (tRes?.ok) {
+      try {
+        const tData = await tRes.json();
+        setTasks(tData.filter((t: Task) => t.status === "active"));
+      } catch {
+        // tasks failed — leave tasks as empty array
+      }
+    }
+
+    if (sRes?.ok) {
+      try {
+        const sData = await sRes.json();
+        setWai(sData.weeklyActiveInterventions ?? null);
+      } catch {
+        // summary failed — leave WAI as null
+      }
+    }
+
+    setLoading(false);
   }
 
   useEffect(() => {

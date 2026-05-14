@@ -34,6 +34,7 @@ export async function GET() {
         : null,
     });
   } catch (err) {
+    console.error("GET /api/me failed:", err);
     return serverError("Failed to load user.");
   }
 }
@@ -111,6 +112,7 @@ export async function PATCH(request: Request) {
       notificationsEnabled: updated.notificationsEnabled,
     });
   } catch (err) {
+    console.error("PATCH /api/me failed:", err);
     return serverError("Failed to update settings.");
   }
 }

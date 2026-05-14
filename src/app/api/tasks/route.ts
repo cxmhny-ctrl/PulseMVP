@@ -15,6 +15,7 @@ export async function GET() {
     });
     return ok(tasks);
   } catch (err) {
+    console.error("GET /api/tasks failed:", err);
     return serverError("Failed to list tasks.");
   }
 }
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
     const task = await prisma.task.create({ data: data as never });
     return created(task);
   } catch (err) {
+    console.error("POST /api/tasks failed:", err);
     return serverError("Failed to create task.");
   }
 }

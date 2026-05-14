@@ -9,23 +9,28 @@ export async function getOrCreateMockUser() {
   });
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        id: MOCK_USER_ID,
-        email: "demo@pulse.local",
-        name: "Demo User",
-        settings: {
-          create: {
-            supportStyle: "gentle",
-            stuckSensitivity: "medium",
-            quietHoursEnabled: true,
-            quietHoursStart: "22:00",
-            quietHoursEnd: "08:00",
+    try {
+      user = await prisma.user.create({
+        data: {
+          id: MOCK_USER_ID,
+          email: "demo@pulse.local",
+          name: "Demo User",
+          settings: {
+            create: {
+              supportStyle: "gentle",
+              stuckSensitivity: "medium",
+              quietHoursEnabled: true,
+              quietHoursStart: "22:00",
+              quietHoursEnd: "08:00",
+            },
           },
         },
-      },
-      include: { settings: true },
-    });
+        include: { settings: true },
+      });
+    } catch (err) {
+      console.error("Failed to create mock user:", err);
+      throw err;
+    }
   }
 
   return user;

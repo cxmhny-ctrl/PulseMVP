@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { MOCK_USER_ID } from "@/lib/mock-user";
+import { getOrCreateMockUser, MOCK_USER_ID } from "@/lib/mock-user";
 import { ok, serverError } from "@/lib/api-response";
 
 function getCurrentWeekRange() {
@@ -21,6 +21,7 @@ function getCurrentWeekRange() {
 
 export async function GET() {
   try {
+    await getOrCreateMockUser();
     const { weekStart, weekEnd, monday, sunday } = getCurrentWeekRange();
 
     const interventions = await prisma.intervention.findMany({
@@ -131,6 +132,7 @@ export async function GET() {
 
     return ok(summary);
   } catch (err) {
+    console.error("GET /api/summaries/weekly/current failed:", err);
     return serverError("Failed to generate weekly summary.");
   }
 }
