@@ -48,7 +48,12 @@ export default function NewTask() {
         let msg = "Failed to create task.";
         try {
           const errData = await res.json();
-          if (errData?.error) msg = errData.error;
+          if (errData?.error) {
+            msg =
+              typeof errData.error === "string"
+                ? errData.error
+                : errData.error.message || JSON.stringify(errData.error);
+          }
         } catch { /* use default */ }
         throw new Error(msg);
       }
@@ -86,12 +91,14 @@ export default function NewTask() {
             <Input
               label="Scheduled start (optional)"
               type="datetime-local"
+              autoComplete="off"
               value={scheduledStart}
               onChange={(e) => setScheduledStart(e.target.value)}
             />
             <Input
               label="Scheduled end (optional)"
               type="datetime-local"
+              autoComplete="off"
               value={scheduledEnd}
               onChange={(e) => setScheduledEnd(e.target.value)}
             />
