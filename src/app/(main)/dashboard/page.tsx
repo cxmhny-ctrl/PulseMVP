@@ -78,11 +78,16 @@ export default function Dashboard() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-slate-100">
-          Dashboard
-        </h1>
+    <div className="max-w-md mx-auto animate-fade-in">
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h1 className="text-xl font-semibold text-slate-100">
+            Dashboard
+          </h1>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Your active tasks and this week&rsquo;s pulse.
+          </p>
+        </div>
         <Link href="/tasks/new">
           <Button>+ New task</Button>
         </Link>
@@ -90,8 +95,8 @@ export default function Dashboard() {
 
       {/* Pulse status module */}
       <Card className="mb-6 relative overflow-hidden">
-        {/* Subtle inner glow */}
-        <div className="pointer-events-none absolute -top-8 right-0 h-32 w-64 rounded-full bg-emerald-500/[0.03] blur-3xl" />
+        <div className="pointer-events-none absolute -top-8 -right-8 h-40 w-64 rounded-full bg-emerald-500/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-4 left-0 h-24 w-48 rounded-full bg-emerald-500/[0.03] blur-2xl" />
         <div className="relative flex items-center gap-4">
           <span className="pulse-indicator shrink-0" />
           <div>

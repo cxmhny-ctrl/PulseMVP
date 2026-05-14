@@ -46,9 +46,12 @@ export default function Interventions() {
 
   return (
     <div className="max-w-md mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-slate-100 mb-6">
+      <h1 className="text-xl font-semibold text-slate-100 mb-1">
         History
       </h1>
+      <p className="text-xs text-slate-500 mb-6">
+        A calm log of the moments you started.
+      </p>
 
       {interventions.length === 0 ? (
         <EmptyState

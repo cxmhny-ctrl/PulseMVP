@@ -132,9 +132,9 @@ export default function StuckMode() {
 
       {/* Ambient pulse accent behind the card */}
       <div className="relative">
-        <div className="pointer-events-none absolute -inset-4 flex items-center justify-center opacity-30">
-          <div className="h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/[0.06]" style={{ animationDelay: "0s" }} />
-          <div className="absolute h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/[0.04]" style={{ animationDelay: "0.8s" }} />
+        <div className="pointer-events-none absolute -inset-4 flex items-center justify-center">
+          <div className="h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/10" style={{ animationDelay: "0s" }} />
+          <div className="absolute h-48 w-48 animate-pulse-ring rounded-full bg-emerald-500/8" style={{ animationDelay: "0.8s" }} />
         </div>
 
         <Card className="relative">

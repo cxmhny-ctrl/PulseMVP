@@ -86,9 +86,12 @@ export default function Settings() {
 
   return (
     <div className="max-w-md mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-slate-100 mb-6">
+      <h1 className="text-xl font-semibold text-slate-100 mb-1">
         Settings
       </h1>
+      <p className="text-xs text-slate-500 mb-6">
+        Tune how Pulse checks in.
+      </p>
 
       <Card>
         <div className="space-y-5">
@@ -118,7 +121,7 @@ export default function Settings() {
                 Pulse won&apos;t send nudges during these hours.
               </p>
             </div>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Start"
                 type="time"

@@ -38,3 +38,19 @@ export function formatLabel(key: string | null | undefined): string {
   if (!key) return "";
   return LABEL_MAP[key] ?? key.replace(/_/g, " ");
 }
+
+const HUMANIZE_ORDER = Object.keys(LABEL_MAP).sort(
+  (a, b) => b.length - a.length
+);
+
+export function humanizeText(text: string): string {
+  let result = text;
+  // Remove quotes around labels: "in_app" → in_app
+  result = result.replace(/"([a-z][a-z_]+)"/g, "$1");
+  // Replace known keys (longest first to avoid partial matches)
+  for (const key of HUMANIZE_ORDER) {
+    const re = new RegExp(`\\b${key.replace(/_/g, "_")}\\b`, "gi");
+    result = result.replace(re, LABEL_MAP[key]);
+  }
+  return result;
+}

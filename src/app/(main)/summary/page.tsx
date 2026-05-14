@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
-import { formatLabel } from "@/lib/labels";
+import { formatLabel, humanizeText } from "@/lib/labels";
 
 interface Summary {
   weekStart: string;
@@ -54,7 +54,8 @@ export default function SummaryPage() {
         {summary.weekStart} &rarr; {summary.weekEnd}
       </p>
 
-      <Card>
+      <Card className="relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-6 right-0 h-24 w-48 rounded-full bg-emerald-500/[0.04] blur-2xl" />
         {/* Stat grid */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="rounded-xl bg-emerald-950/30 p-4 ring-1 ring-inset ring-emerald-500/10">
@@ -124,7 +125,7 @@ export default function SummaryPage() {
               Reflection
             </p>
             <p className="text-sm text-slate-300 leading-relaxed">
-              {summary.summaryText}
+              {humanizeText(summary.summaryText)}
             </p>
           </div>
         )}

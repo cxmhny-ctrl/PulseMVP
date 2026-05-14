@@ -100,7 +100,7 @@ export default function NewTask() {
                 Optional. Pulse won&apos;t nudge you outside this window.
               </p>
             </div>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Start time"
                 type="datetime-local"
