@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,10 +8,18 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fraunces",
+  axes: ["opsz", "SOFT", "WONK"],
+});
+
 export const metadata: Metadata = {
-  title: "Pulse \u2014 ADHD Stuck-to-Action Companion",
+  title: "Pulse — Start when you're stuck",
   description:
-    "Pulse helps you start when you\u2019re stuck. No complex planning. No shame. The next tiny step.",
+    "Pulse gives you the next tiny step when you're stuck. No shame. No planning. Just a quiet nudge forward.",
+  themeColor: "#FBF8F0",
 };
 
 export default function RootLayout({
@@ -20,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${fraunces.variable} bg-background`}>
       <body className="min-h-screen antialiased font-sans">
         {children}
       </body>

@@ -3,46 +3,66 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: #FBF8F0;
+    --foreground: #2D2B28;
+    --surface: #FEFCF8;
+    --surface-raised: #FFFFFF;
+    --border: #E5E2DC;
+    --border-subtle: #EFECE8;
+    --muted: #9B9894;
+    --muted-strong: #6B6864;
+
+    --sage: #4A9B7F;
+    --sage-light: #E8F5EF;
+    --sage-muted: rgba(74,155,127,0.12);
+    --amber: #D48C4A;
+    --amber-light: #FBF0E0;
+    --coral: #D4695E;
+    --coral-light: #FAE7E5;
+    --ink: #2D2B28;
+    --ink-soft: #6B6864;
+
+    --radius: 1rem;
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--background);
   }
 
   body {
-    @apply bg-warm-paper text-charcoal-900;
+    @apply bg-background text-foreground font-sans;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  * {
-    @apply border-charcoal-100;
-  }
-
   ::selection {
-    @apply bg-sage-light text-charcoal-900;
+    background: var(--sage-light);
+    color: var(--ink);
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-sage/40 ring-offset-2 ring-offset-warm-paper;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px rgba(74,155,127,0.4);
   }
 }
 
 @layer components {
+  /* ---------- surfaces ---------- */
   .surface-card {
-    @apply rounded-2xl border border-charcoal-100 bg-white p-5;
+    @apply rounded-2xl border border-border bg-surface-raised p-5;
   }
 
   .surface-warm {
-    @apply rounded-2xl border border-charcoal-100 bg-warm-cream p-5;
+    @apply rounded-2xl border border-border bg-surface p-5;
   }
 
-  .surface-depth {
-    @apply rounded-2xl border border-depth-border bg-depth p-5;
+  .surface-ink {
+    @apply rounded-2xl bg-ink text-warm-paper p-5;
   }
 
-  .surface-depth-card {
-    @apply rounded-2xl border border-depth-border bg-depth-surface p-5;
-  }
-
+  /* ---------- Pulse orb ---------- */
   .pulse-orb {
     @apply relative flex items-center justify-center;
   }
@@ -57,20 +77,24 @@
     @apply absolute h-3 w-3 rounded-full bg-sage animate-breathe;
   }
 
-  .pulse-orb-depth {
-    @apply relative flex items-center justify-center;
+  /* ---------- editorial type helpers ---------- */
+  .eyebrow {
+    @apply text-[10px] font-semibold uppercase tracking-[0.22em] text-muted;
   }
 
-  .pulse-orb-depth::before {
-    content: "";
-    @apply absolute inset-0 animate-pulse-ring rounded-full bg-sage/25;
+  .headline-xl {
+    @apply font-serif text-5xl lg:text-7xl font-bold leading-[1.02] tracking-tight text-foreground text-balance;
   }
 
-  .pulse-orb-depth::after {
-    content: "";
-    @apply absolute h-3 w-3 rounded-full bg-sage animate-breathe;
+  .headline-lg {
+    @apply font-serif text-4xl lg:text-5xl font-bold leading-[1.05] tracking-tight text-foreground text-balance;
   }
 
+  .headline-md {
+    @apply font-serif text-2xl lg:text-3xl font-bold leading-[1.1] tracking-tight text-foreground text-balance;
+  }
+
+  /* ---------- badges ---------- */
   .status-badge {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
   }
@@ -87,13 +111,14 @@
     @apply bg-charcoal-100 text-charcoal-500 ring-1 ring-inset ring-charcoal-300/40;
   }
 
+  /* ---------- timeline ---------- */
   .timeline-dot {
     @apply relative pl-7 pb-6 last:pb-0;
   }
 
   .timeline-dot::before {
     content: "";
-    @apply absolute left-[9px] top-[24px] bottom-0 w-0.5 bg-charcoal-100;
+    @apply absolute left-[9px] top-[24px] bottom-0 w-px bg-border;
   }
 
   .timeline-dot:last-child::before {
@@ -102,16 +127,85 @@
 
   .timeline-dot::after {
     content: "";
-    @apply absolute left-[2px] top-1.5 w-[15px] h-[15px] rounded-full border-2 border-charcoal-300/60 bg-white;
+    @apply absolute left-[2px] top-1.5 w-[15px] h-[15px] rounded-full border-2 border-border-subtle bg-surface-raised;
   }
 
   .timeline-dot-active::after {
-    @apply border-sage/30 bg-sage-light;
+    @apply border-sage/40 bg-sage-light;
   }
 
+  /* ---------- task strip ---------- */
+  .task-strip {
+    @apply flex items-center gap-4 rounded-2xl border border-border bg-surface-raised px-5 py-4 transition-all duration-200 hover:border-sage/25 hover:shadow-sm;
+  }
+
+  /* ---------- active focus module (large hero card) ---------- */
+  .focus-module {
+    @apply relative overflow-hidden rounded-3xl border-2 border-sage/20 bg-surface-raised p-8;
+  }
+
+  /* ---------- stuck mode surfaces ---------- */
+  .stuck-surface {
+    background: #1A1815;
+  }
+
+  .stuck-card {
+    @apply rounded-2xl border border-white/8 bg-white/4 p-6;
+  }
+
+  /* ---------- misc ---------- */
   .text-balance {
     text-wrap: balance;
   }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------- animations ---------- */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.45s ease-out both;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.32,0.72,0,1) both;
+  }
+
+  .animate-enter {
+    animation: enter 0.55s cubic-bezier(0.32,0.72,0,1) both;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes breathe {
+  0%,100% { opacity: 0.55; transform: scale(0.95); }
+  50%      { opacity: 1;    transform: scale(1.05); }
+}
+
+@keyframes pulseRing {
+  0%   { transform: scale(0.85); opacity: 0.55; }
+  100% { transform: scale(2.4);  opacity: 0; }
+}
+
+@keyframes glow {
+  0%,100% { opacity: 0.25; }
+  50%     { opacity: 0.5; }
 }
 
 @media (prefers-reduced-motion: reduce) {

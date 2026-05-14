@@ -2,9 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Button from "@/components/ui/Button";
-import PulseOrb from "@/components/PulseOrb";
-import StuckPath from "@/components/StuckPath";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import { formatLabel } from "@/lib/labels";
@@ -12,16 +9,16 @@ import { formatLabel } from "@/lib/labels";
 type Stage = "intake" | "generating" | "result" | "done";
 
 const frictionOptions = [
-  { value: "", label: "\u2014 or pick one \u2014" },
-  { value: "too_vague", label: "Too vague" },
-  { value: "too_large", label: "Too large" },
-  { value: "unclear_first_step", label: "Unclear first step" },
-  { value: "overwhelm", label: "Overwhelm" },
+  { value: "",                    label: "— pick one —" },
+  { value: "too_vague",           label: "Too vague" },
+  { value: "too_large",           label: "Too large" },
+  { value: "unclear_first_step",  label: "Unclear first step" },
+  { value: "overwhelm",           label: "Overwhelm" },
   { value: "emotional_avoidance", label: "Emotional avoidance" },
-  { value: "boredom", label: "Boredom" },
-  { value: "perfectionism", label: "Perfectionism" },
-  { value: "energy_mismatch", label: "Energy mismatch" },
-  { value: "decision_fatigue", label: "Decision fatigue" },
+  { value: "boredom",             label: "Boredom" },
+  { value: "perfectionism",       label: "Perfectionism" },
+  { value: "energy_mismatch",     label: "Energy mismatch" },
+  { value: "decision_fatigue",    label: "Decision fatigue" },
   { value: "transition_friction", label: "Transition friction" },
 ];
 
@@ -34,19 +31,52 @@ interface StepResult {
   frictionType: string;
 }
 
+/* ── Stage progress dots ─────────────────────────────── */
+function StageDots({ stage }: { stage: Stage }) {
+  const stages: Stage[] = ["intake", "generating", "result", "done"];
+  const idx = stages.indexOf(stage);
+  return (
+    <div className="flex items-center gap-2" role="progressbar" aria-valuenow={idx + 1} aria-valuemax={4}>
+      {stages.map((s, i) => (
+        <span
+          key={s}
+          className={`rounded-full transition-all duration-300
+            ${i < idx  ? "h-1.5 w-1.5 bg-sage/50"
+            : i === idx ? "h-2 w-6 bg-sage"
+            : "h-1.5 w-1.5 bg-white/15"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ── Pulse orb (dark, large) ─────────────────────────── */
+function PulseOrbDark({ size = "lg" }: { size?: "md" | "lg" | "xl" }) {
+  const dim = size === "xl" ? "h-28 w-28" : size === "lg" ? "h-20 w-20" : "h-14 w-14";
+  const dot = size === "xl" ? "h-5 w-5" : size === "lg" ? "h-4 w-4" : "h-3 w-3";
+  return (
+    <div className={`relative flex items-center justify-center ${dim}`} aria-hidden>
+      <span className="absolute inset-0 rounded-full bg-sage/20 animate-pulse-ring" style={{ animationDelay: "0s" }} />
+      <span className="absolute inset-0 rounded-full bg-sage/12 animate-pulse-ring" style={{ animationDelay: "0.9s" }} />
+      <span className="absolute inset-0 rounded-full bg-sage/6  animate-pulse-ring" style={{ animationDelay: "1.8s" }} />
+      <span className={`${dot} rounded-full bg-sage animate-breathe z-10`} />
+    </div>
+  );
+}
+
 export default function StuckMode() {
   const params = useParams();
   const router = useRouter();
   const taskId = params.taskId as string;
 
-  const [taskTitle, setTaskTitle] = useState<string | null>(null);
-  const [stage, setStage] = useState<Stage>("intake");
+  const [taskTitle,        setTaskTitle]        = useState<string | null>(null);
+  const [stage,            setStage]            = useState<Stage>("intake");
   const [stuckDescription, setStuckDescription] = useState("");
-  const [frictionType, setFrictionType] = useState("");
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [step, setStep] = useState<StepResult | null>(null);
-  const [showEasier, setShowEasier] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [frictionType,     setFrictionType]     = useState("");
+  const [sessionId,        setSessionId]        = useState<string | null>(null);
+  const [step,             setStep]             = useState<StepResult | null>(null);
+  const [showEasier,       setShowEasier]       = useState(false);
+  const [error,            setError]            = useState<string | null>(null);
 
   const loadTask = useCallback(async () => {
     try {
@@ -66,7 +96,11 @@ export default function StuckMode() {
       const body: Record<string, unknown> = { taskId };
       if (stuckDescription.trim()) body.stuckDescription = stuckDescription.trim();
       if (frictionType) body.frictionType = frictionType;
-      const sRes = await fetch("/api/stuck-sessions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const sRes = await fetch("/api/stuck-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
       if (!sRes.ok) throw new Error("Failed");
       const session = await sRes.json(); setSessionId(session.id);
       const gRes = await fetch(`/api/stuck-sessions/${session.id}/generate-step`, { method: "POST" });
@@ -78,56 +112,66 @@ export default function StuckMode() {
   async function handleOutcome(outcome: string) {
     if (!sessionId) return;
     try {
-      await fetch(`/api/stuck-sessions/${sessionId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ outcome }) });
-      if (outcome === "started") setStage("done");
+      await fetch(`/api/stuck-sessions/${sessionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ outcome }),
+      });
+      if (outcome === "started")        setStage("done");
       else if (outcome === "easier_version") setShowEasier(true);
       else router.push("/dashboard");
     } catch { setError("Could not save outcome."); }
   }
 
-  if (!taskTitle && !error) return <LoadingState message="Loading task\u2026" />;
+  if (!taskTitle && !error) return <LoadingState message="Loading task…" />;
   if (error && stage === "intake") return <ErrorState message={error} onRetry={loadTask} />;
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md animate-fade-in">
-        {/* Progress indicator */}
+    /* Full-screen dark immersive surface */
+    <div className="min-h-screen bg-depth flex flex-col items-center justify-center px-6 py-12">
+      <div className="w-full max-w-sm animate-fade-in">
+
+        {/* ── Header bar ──────────────────────────────── */}
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-5 w-5 items-center justify-center" aria-hidden>
+              <span className="absolute inset-0 rounded-full border border-sage/40" />
+              <span className="absolute inset-[3px] rounded-full border border-sage/60" />
+              <span className="h-1.5 w-1.5 rounded-full bg-sage animate-breathe" />
+            </span>
+            <span className="text-xs font-semibold text-white/50 tracking-tight">Pulse</span>
+          </div>
+          <StageDots stage={stage} />
+        </div>
+
+        {/* ── Task label ──────────────────────────────── */}
+        <div className="text-center mb-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30 mb-2">Stuck on</p>
+          <p className="text-base font-medium text-white/70 text-balance">{taskTitle}</p>
+        </div>
+
+        {/* ── Central orb ─────────────────────────────── */}
         <div className="flex justify-center mb-10">
-          <StuckPath
-            size="sm"
-            depth
-            currentStage={stage === "done" ? "started" : stage === "result" ? "step" : "stuck"}
-          />
+          <PulseOrbDark size={stage === "generating" ? "xl" : "lg"} />
         </div>
 
-        {/* PulseOrb - large, central anchor */}
-        <div className="flex justify-center mb-10">
-          <PulseOrb size="xl" depth />
-        </div>
-
-        {/* Task context - subtle */}
-        <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-1.5">Stuck on</p>
-          <h1 className="text-base font-medium text-gray-200">{taskTitle}</h1>
-        </div>
-
+        {/* ═══ INTAKE ════════════════════════════════════ */}
         {stage === "intake" && (
-          <div className="space-y-4">
-            {/* Central question */}
-            <h2 className="text-lg font-semibold text-white text-center">
+          <div className="space-y-5 animate-slide-up">
+            <h2 className="font-serif text-2xl font-bold text-white text-center leading-snug text-balance">
               What feels stuck?
             </h2>
 
-            {/* Secondary inputs - reduced visual weight */}
             <textarea
-              className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-gray-300 placeholder-gray-500 focus:border-sage/20 focus:outline-none focus:ring-0 resize-none"
-              rows={2}
+              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm text-white/80 placeholder-white/25 focus:border-sage/30 focus:outline-none focus:ring-0 resize-none"
+              rows={3}
               placeholder="Describe what's blocking you (optional)"
               value={stuckDescription}
               onChange={(e) => setStuckDescription(e.target.value)}
             />
+
             <select
-              className="block w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-gray-400 focus:border-sage/20 focus:outline-none focus:ring-0"
+              className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/50 focus:border-sage/30 focus:outline-none focus:ring-0"
               value={frictionType}
               onChange={(e) => setFrictionType(e.target.value)}
             >
@@ -135,65 +179,122 @@ export default function StuckMode() {
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
-            <div className="pt-3">
-              <Button onClick={handleGenerate} className="w-full">Find my next step</Button>
-            </div>
+
+            <button
+              onClick={handleGenerate}
+              className="w-full rounded-full bg-sage h-12 text-sm font-semibold text-white shadow-[0_2px_24px_rgba(74,155,127,0.35)] transition-all duration-200 hover:bg-sage-hover active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/40"
+            >
+              Find my next step
+            </button>
           </div>
         )}
 
+        {/* ═══ GENERATING ════════════════════════════════ */}
         {stage === "generating" && (
-          <div className="py-14 flex flex-col items-center gap-5">
-            <PulseOrb size="lg" depth />
-            <p className="text-sm text-gray-400">Finding your next tiny step\u2026</p>
+          <div className="py-4 flex flex-col items-center gap-4 animate-fade-in">
+            <p className="text-sm text-white/40">Finding your next tiny step…</p>
           </div>
         )}
 
+        {/* ═══ RESULT ════════════════════════════════════ */}
         {stage === "result" && step && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <p className="text-xs uppercase tracking-[0.2em] text-sage/60 mb-3">
+          <div className="space-y-8 animate-enter">
+            {/* The step — large, editorial */}
+            <div className="text-center space-y-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sage/60">
                 {showEasier ? "Easier version" : "Your next step"}
               </p>
-              <p className="text-2xl font-semibold leading-relaxed text-white text-balance">
+              <p className="font-serif text-2xl font-bold text-white leading-snug text-balance">
                 {showEasier ? step.easierVersion : step.nextStep}
               </p>
             </div>
-            <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
-              <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-sage/50" />~{step.estimatedMinutes} min</span>
-              {step.frictionType && (<><span className="text-gray-600">&middot;</span><span>{formatLabel(step.frictionType)}</span></>)}
+
+            {/* Meta */}
+            <div className="flex items-center justify-center gap-4 text-xs text-white/30">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1 w-1 rounded-full bg-sage/50" aria-hidden />
+                ~{step.estimatedMinutes} min
+              </span>
+              {step.frictionType && (
+                <>
+                  <span className="text-white/15" aria-hidden>·</span>
+                  <span>{formatLabel(step.frictionType)}</span>
+                </>
+              )}
             </div>
-            {!showEasier && (
-              <div className="space-y-2.5">
-                <Button onClick={() => handleOutcome("started")} className="w-full">Start</Button>
-                <Button variant="secondary" onClick={() => handleOutcome("easier_version")} className="w-full">Easier version</Button>
-                <button onClick={() => handleOutcome("not_now")} className="w-full py-2 text-xs text-gray-400 hover:text-gray-300 transition-colors duration-200">Not now</button>
+
+            {/* Actions */}
+            {!showEasier ? (
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleOutcome("started")}
+                  className="w-full rounded-full bg-sage h-12 text-sm font-semibold text-white shadow-[0_2px_24px_rgba(74,155,127,0.35)] transition-all duration-200 hover:bg-sage-hover active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/40"
+                >
+                  Start
+                </button>
+                <button
+                  onClick={() => handleOutcome("easier_version")}
+                  className="w-full rounded-full border border-white/12 bg-white/5 h-12 text-sm font-medium text-white/60 transition-all duration-200 hover:bg-white/10 hover:text-white/80 active:scale-[0.97]"
+                >
+                  Easier version
+                </button>
+                <button
+                  onClick={() => handleOutcome("not_now")}
+                  className="w-full py-2.5 text-xs text-white/25 hover:text-white/45 transition-colors duration-150"
+                >
+                  Not now
+                </button>
               </div>
-            )}
-            {showEasier && (
-              <div className="space-y-2">
-                <Button onClick={() => handleOutcome("started")} className="w-full">Start easier version</Button>
-                <button onClick={() => setShowEasier(false)} className="w-full py-2 text-xs text-gray-400 hover:text-gray-300 transition-colors duration-200">Go back</button>
+            ) : (
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleOutcome("started")}
+                  className="w-full rounded-full bg-sage h-12 text-sm font-semibold text-white shadow-[0_2px_24px_rgba(74,155,127,0.35)] transition-all duration-200 hover:bg-sage-hover active:scale-[0.97]"
+                >
+                  Start easier version
+                </button>
+                <button
+                  onClick={() => setShowEasier(false)}
+                  className="w-full py-2.5 text-xs text-white/25 hover:text-white/45 transition-colors duration-150"
+                >
+                  Go back
+                </button>
               </div>
             )}
           </div>
         )}
 
+        {/* ═══ DONE ══════════════════════════════════════ */}
         {stage === "done" && (
-          <div className="space-y-5 text-center">
+          <div className="space-y-6 text-center animate-enter">
+            {/* Big checkmark area */}
             <div className="flex justify-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sage/15 ring-1 ring-inset ring-sage/20">
-                <span className="text-xl text-sage">&rarr;</span>
+              <div className="relative flex h-16 w-16 items-center justify-center">
+                <span className="absolute inset-0 rounded-full bg-sage/15" />
+                <span className="absolute inset-0 rounded-full bg-sage/8 animate-pulse-ring" />
+                <span className="font-serif text-2xl text-sage" aria-hidden>→</span>
               </div>
             </div>
+
             <div>
-              <p className="text-xl font-medium text-white">Started</p>
-              <p className="mt-1 text-sm text-gray-400">You&apos;re doing it. Come back when you&apos;re ready.</p>
+              <p className="font-serif text-2xl font-bold text-white">Started.</p>
+              <p className="mt-2 text-sm text-white/40 leading-relaxed text-pretty">
+                You&apos;re doing it. Come back when you need another step.
+              </p>
             </div>
-            <Button onClick={() => router.push("/dashboard")} variant="secondary">Back to dashboard</Button>
+
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="inline-flex items-center justify-center rounded-full border border-white/12 bg-white/5 px-7 h-11 text-sm font-medium text-white/60 transition-all duration-200 hover:bg-white/10 hover:text-white/80 active:scale-[0.97]"
+            >
+              Back to dashboard
+            </button>
           </div>
         )}
 
-        {error && stage !== "intake" && <ErrorState message={error} />}
+        {error && stage !== "intake" && (
+          <ErrorState message={error} />
+        )}
       </div>
     </div>
   );

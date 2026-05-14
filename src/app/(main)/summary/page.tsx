@@ -20,7 +20,7 @@ interface Summary {
 export default function SummaryPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error,   setError]   = useState<string | null>(null);
 
   async function load() {
     setLoading(true); setError(null);
@@ -34,68 +34,104 @@ export default function SummaryPage() {
 
   useEffect(() => { load(); }, []);
 
-  if (loading) return <LoadingState message="Loading summary\u2026" />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
+  if (loading) return <LoadingState message="Loading summary…" />;
+  if (error)   return <ErrorState  message={error} onRetry={load} />;
   if (!summary) return null;
 
-  const starts = summary.successfulTransitions;
+  const starts  = summary.successfulTransitions;
+
+  const headline =
+    starts === 0
+      ? "Pulse was ready for you. No starts yet — and that's okay."
+      : starts === 1
+      ? "This week, Pulse helped you start once."
+      : `This week, Pulse helped you start ${starts} times.`;
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in">
-      {/* Header */}
-      <p className="text-xs uppercase tracking-[0.2em] text-charcoal-500 mb-2">Weekly reflection</p>
-      <p className="text-sm text-charcoal-400 mb-10">{summary.weekStart} &rarr; {summary.weekEnd}</p>
+    <div className="animate-fade-in max-w-2xl">
 
-      {/* Lead narrative - visual centerpiece */}
-      <div className="mb-12">
-        <h1 className="text-3xl font-bold text-charcoal-900 leading-tight text-balance">
-          {starts === 0
-            ? "Pulse was ready for you this week. No starts yet \u2014 and that\u2019s okay."
-            : starts === 1
-            ? "This week, Pulse helped you start once."
-            : `This week, Pulse helped you start ${starts} times.`}
-        </h1>
+      {/* ── Header ───────────────────────────────────────── */}
+      <p className="eyebrow mb-2">Weekly reflection</p>
+      <p className="text-xs text-muted mb-10">
+        {summary.weekStart} &rarr; {summary.weekEnd}
+      </p>
 
-        {/* Inline metric chips */}
-        <div className="flex flex-wrap gap-4 mt-6">
-          <span className="inline-flex items-center gap-2 rounded-full bg-sage-light/60 px-4 py-1.5 text-sm font-medium text-sage ring-1 ring-inset ring-sage/15">
-            <span className="h-1.5 w-1.5 rounded-full bg-sage" /> {summary.successfulTransitions} starts
+      {/* ── Hero headline ────────────────────────────────── */}
+      <div className="mb-10">
+        <h1 className="headline-lg">{headline}</h1>
+
+        {/* Metric chips */}
+        <div className="flex flex-wrap gap-3 mt-7">
+          <span className="inline-flex items-center gap-2 rounded-full bg-sage-light border border-sage/20 px-4 py-1.5 text-sm font-medium text-sage">
+            <span className="h-1.5 w-1.5 rounded-full bg-sage" aria-hidden />
+            {summary.successfulTransitions} start{summary.successfulTransitions !== 1 ? "s" : ""}
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-charcoal-100/60 px-4 py-1.5 text-sm font-medium text-charcoal-600 ring-1 ring-inset ring-charcoal-300/30">
-            <span className="h-1.5 w-1.5 rounded-full bg-charcoal-300" /> {summary.dismissals} skipped
+          <span className="inline-flex items-center gap-2 rounded-full bg-border-subtle border border-border px-4 py-1.5 text-sm font-medium text-muted-strong">
+            <span className="h-1.5 w-1.5 rounded-full bg-charcoal-300" aria-hidden />
+            {summary.dismissals} skipped
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-calm-light/60 px-4 py-1.5 text-sm font-medium text-calm ring-1 ring-inset ring-calm/15">
-            <span className="h-1.5 w-1.5 rounded-full bg-calm" /> {summary.weeklyActiveInterventions} check-ins
+          <span className="inline-flex items-center gap-2 rounded-full bg-calm-light border border-calm/20 px-4 py-1.5 text-sm font-medium text-calm">
+            <span className="h-1.5 w-1.5 rounded-full bg-calm" aria-hidden />
+            {summary.weeklyActiveInterventions} check-in{summary.weeklyActiveInterventions !== 1 ? "s" : ""}
           </span>
         </div>
       </div>
 
-      {/* Reflection text */}
+      {/* ── Big stat ─────────────────────────────────────── */}
+      <div className="rounded-3xl border border-border bg-surface-raised p-8 mb-5 flex items-end gap-5">
+        <div>
+          <p className="eyebrow mb-2">Success rate</p>
+          <p className="font-serif text-6xl font-bold text-foreground leading-none">
+            {summary.weeklyActiveInterventions > 0
+              ? Math.round((starts / summary.weeklyActiveInterventions) * 100)
+              : 0}
+            <span className="text-3xl text-muted ml-1">%</span>
+          </p>
+          <p className="text-xs text-muted mt-2">of check-ins turned into action</p>
+        </div>
+        <div className="ml-auto hidden sm:block">
+          {/* Pulse mark decorative */}
+          <span className="relative flex h-14 w-14 items-center justify-center" aria-hidden>
+            <span className="absolute inset-0 rounded-full border border-sage/20" />
+            <span className="absolute inset-[6px] rounded-full border border-sage/35" />
+            <span className="absolute inset-[12px] rounded-full border border-sage/50" />
+            <span className="h-3 w-3 rounded-full bg-sage animate-breathe" />
+          </span>
+        </div>
+      </div>
+
+      {/* ── Reflection text ──────────────────────────────── */}
       {summary.summaryText && (
-        <div className="rounded-2xl border border-charcoal-100 bg-white p-6 mb-5">
-          <p className="text-xs uppercase tracking-[0.15em] text-charcoal-500 mb-4">Reflection</p>
-          <p className="text-base text-charcoal-700 leading-relaxed">{humanizeText(summary.summaryText)}</p>
+        <div className="rounded-3xl border border-border bg-surface-raised p-7 mb-5">
+          <p className="eyebrow mb-4">Reflection</p>
+          <p className="text-base text-muted-strong leading-relaxed text-pretty">
+            {humanizeText(summary.summaryText)}
+          </p>
         </div>
       )}
 
-      {/* Top friction callout */}
-      {summary.topFrictionType && (
-        <div className="rounded-xl bg-coral-light/50 p-5 ring-1 ring-inset ring-coral/10 mb-5">
-          <p className="text-xs text-coral/70 mb-1">Most common friction</p>
-          <p className="text-sm font-semibold text-charcoal-900">{humanizeText(summary.topFrictionType)}</p>
-        </div>
-      )}
-
-      {/* Suggestion */}
-      {summary.recommendedAdjustment && (
-        <div className="rounded-xl bg-amber-light/50 p-5 ring-1 ring-inset ring-amber/10 mb-5">
-          <p className="text-xs uppercase tracking-[0.15em] text-amber mb-2">Suggestion</p>
-          <p className="text-sm text-charcoal-700 leading-relaxed">{summary.recommendedAdjustment}</p>
-        </div>
-      )}
+      {/* ── Friction + Suggestion row ────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        {summary.topFrictionType && (
+          <div className="rounded-2xl border border-coral/20 bg-coral-light/40 p-5">
+            <p className="eyebrow text-coral/70 mb-2">Most common friction</p>
+            <p className="text-base font-semibold text-foreground">
+              {humanizeText(summary.topFrictionType)}
+            </p>
+          </div>
+        )}
+        {summary.recommendedAdjustment && (
+          <div className="rounded-2xl border border-amber/20 bg-amber-light/50 p-5">
+            <p className="eyebrow text-amber/70 mb-2">Suggestion</p>
+            <p className="text-sm text-muted-strong leading-relaxed text-pretty">
+              {summary.recommendedAdjustment}
+            </p>
+          </div>
+        )}
+      </div>
 
       {!summary.summaryText && !summary.topFrictionType && !summary.recommendedAdjustment && (
-        <p className="text-sm text-charcoal-500 italic mt-6">Keep going. Patterns emerge over time.</p>
+        <p className="text-sm text-muted italic mt-4">Keep going. Patterns emerge over time.</p>
       )}
     </div>
   );

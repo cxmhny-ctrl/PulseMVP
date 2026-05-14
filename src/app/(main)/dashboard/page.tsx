@@ -7,7 +7,6 @@ import Button from "@/components/ui/Button";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
-import PulseOrb from "@/components/PulseOrb";
 import { formatLabel } from "@/lib/labels";
 
 interface Task {
@@ -19,187 +18,228 @@ interface Task {
   createdAt: string;
 }
 
-interface Summary {
-  weeklyActiveInterventions: number;
-  successfulTransitions: number;
-}
-
-const energyClass: Record<string, string> = {
-  low: "border-l-amber/50",
-  medium: "border-l-sage/50",
-  high: "border-l-calm/50",
+const energyAccent: Record<string, string> = {
+  low:    "bg-amber",
+  medium: "bg-sage",
+  high:   "bg-calm",
 };
 
-const energyDot: Record<string, string> = {
-  low: "bg-amber",
-  medium: "bg-sage",
-  high: "bg-calm",
+const energyLabel: Record<string, string> = {
+  low:    "Low energy",
+  medium: "Medium energy",
+  high:   "High energy",
 };
 
 export default function Dashboard() {
   const router = useRouter();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [wai, setWai] = useState<number | null>(null);
-  const [starts, setStarts] = useState<number>(0);
+  const [tasks,   setTasks]   = useState<Task[]>([]);
+  const [starts,  setStarts]  = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error,   setError]   = useState<string | null>(null);
 
   async function load() {
     setLoading(true); setError(null);
-    const results = await Promise.allSettled([fetch("/api/tasks"), fetch("/api/summaries/weekly/current")]);
+    const results = await Promise.allSettled([
+      fetch("/api/tasks"),
+      fetch("/api/summaries/weekly/current"),
+    ]);
     const tRes = results[0].status === "fulfilled" ? results[0].value : null;
     const sRes = results[1].status === "fulfilled" ? results[1].value : null;
     if (!tRes && !sRes) { setError("Could not load dashboard."); setLoading(false); return; }
-    if (tRes?.ok) { try { const d = await tRes.json(); setTasks(d.filter((t: Task) => t.status === "active")); } catch { /* */ } }
-    if (sRes?.ok) { try { const d = await sRes.json(); setWai(d.weeklyActiveInterventions ?? null); setStarts(d.successfulTransitions ?? 0); } catch { /* */ } }
+    if (tRes?.ok) {
+      try { const d = await tRes.json(); setTasks(d.filter((t: Task) => t.status === "active")); } catch { /* */ }
+    }
+    if (sRes?.ok) {
+      try { const d = await sRes.json(); setStarts(d.successfulTransitions ?? 0); } catch { /* */ }
+    }
     setLoading(false);
   }
 
   useEffect(() => { load(); }, []);
 
-  if (loading) return <LoadingState message="Loading dashboard\u2026" />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
+  if (loading) return <LoadingState message="Loading dashboard…" />;
+  if (error)   return <ErrorState  message={error} onRetry={load} />;
 
-  const nextStepTask = tasks.find((t) => t.currentNextStep);
+  const [primaryTask, ...otherTasks] = tasks;
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
+    <div className="animate-fade-in space-y-8">
+
+      {/* ── Page header ──────────────────────────────────── */}
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-charcoal-900">Dashboard</h1>
-          <p className="mt-0.5 text-sm text-charcoal-500">Your active tasks and this week&rsquo;s pulse.</p>
+          <p className="eyebrow mb-1">Your workspace</p>
+          <h1 className="headline-md">Dashboard</h1>
         </div>
-        <Link href="/tasks/new"><Button>+ New task</Button></Link>
+        <Link href="/tasks/new">
+          <Button>+ New task</Button>
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Left: tasks (2/3) */}
-        <div className="lg:col-span-2 space-y-4">
-          {tasks.length === 0 ? (
-            <EmptyState title="No tasks yet" description="Say one thing you want help starting." action={<Link href="/tasks/new"><Button>Create a task</Button></Link>} />
-          ) : (
-            <>
-              {/* Primary active task panel - taller, more dominant */}
-              {tasks[0] && (
-                <div className="surface-card relative overflow-hidden border-2 border-sage/15 p-6">
-                  <div className="pointer-events-none absolute -top-12 -right-12 h-56 w-96 rounded-full bg-sage/4 blur-3xl" />
-                  <div className="relative">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`h-2.5 w-2.5 rounded-full ${energyDot[tasks[0].energyRequired] ?? "bg-sage"}`} />
-                      <p className="text-[11px] uppercase tracking-[0.15em] text-charcoal-500 font-medium">Active focus</p>
-                    </div>
-                    <h2 className="text-2xl font-bold text-charcoal-900 mt-2">{tasks[0].title}</h2>
-                    <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-                      <span className="inline-flex items-center rounded-full bg-charcoal-100/60 px-3 py-1 text-xs font-medium text-charcoal-700 ring-1 ring-inset ring-charcoal-300/30">
-                        {formatLabel(tasks[0].energyRequired)}
-                      </span>
-                    </div>
-
-                    {/* Next step as a highlighted strip */}
-                    {tasks[0].currentNextStep && (
-                      <div className="mt-5 rounded-xl bg-amber-light/40 px-4 py-3 ring-1 ring-inset ring-amber/15">
-                        <p className="text-[10px] uppercase tracking-[0.15em] text-amber/70 mb-1">Current next step</p>
-                        <p className="text-sm font-medium text-charcoal-800 leading-snug">{tasks[0].currentNextStep}</p>
-                      </div>
-                    )}
-
-                    {/* I'm stuck - calm primary action area */}
-                    <div className="mt-5 pt-4 border-t border-charcoal-100 flex items-center gap-4">
-                      <Button
-                        onClick={() => router.push(`/stuck/${tasks[0].id}`)}
-                        className="border-amber/25 bg-amber-light/50 text-amber hover:bg-amber-light hover:text-amber shadow-none px-6"
-                      >
-                        I&rsquo;m stuck
-                      </Button>
-                      <span className="text-xs text-charcoal-400">
-                        Tap when you can&rsquo;t start &rarr; Pulse gives you the next tiny step
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Remaining tasks */}
-              {tasks.slice(1).map((task) => (
-                <div key={task.id} className={`surface-card ${energyClass[task.energyRequired] ?? "border-l-sage/50"} border-l-2`}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3 className="font-medium text-charcoal-900 truncate">{task.title}</h3>
-                      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
-                        <span className="inline-flex items-center rounded-full bg-charcoal-100/60 px-2.5 py-0.5 text-xs font-medium text-charcoal-700 ring-1 ring-inset ring-charcoal-300/30">
-                          {formatLabel(task.energyRequired)}
-                        </span>
-                        {task.currentNextStep && (
-                          <span className="inline-flex items-center gap-1.5 text-charcoal-500">
-                            <span className="h-1 w-1 rounded-full bg-sage/60" />{task.currentNextStep}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <Button variant="secondary" onClick={() => router.push(`/stuck/${task.id}`)} className="shrink-0 border-amber/20 bg-amber-light/30 text-amber hover:bg-amber-light/60">
-                      I&rsquo;m stuck
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
+      {/* ── Stat strip ───────────────────────────────────── */}
+      <div className="flex items-center gap-6 border-y border-border py-4">
+        <div>
+          <p className="eyebrow mb-0.5">This week</p>
+          <p className="font-serif text-3xl font-bold text-foreground">{starts}</p>
+          <p className="text-xs text-muted mt-0.5">successful starts</p>
         </div>
-
-        {/* Right: Today's Pulse */}
-        <div className="lg:col-span-1">
-          <div className="surface-warm sticky top-20">
-            <div className="flex items-center gap-3 mb-5">
-              <PulseOrb size="sm" />
-              <div>
-                <h3 className="text-sm font-semibold text-charcoal-900">Today&rsquo;s Pulse</h3>
-                <p className="text-xs text-charcoal-500">
-                  {starts > 0 ? `${starts} start${starts !== 1 ? "s" : ""} this week` : "Ready when you are"}
-                </p>
-              </div>
+        <div className="h-10 w-px bg-border" aria-hidden />
+        <div>
+          <p className="eyebrow mb-0.5">Active tasks</p>
+          <p className="font-serif text-3xl font-bold text-foreground">{tasks.length}</p>
+          <p className="text-xs text-muted mt-0.5">in progress</p>
+        </div>
+        {starts > 0 && (
+          <>
+            <div className="h-10 w-px bg-border" aria-hidden />
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-sage animate-breathe" aria-hidden />
+              <p className="text-xs text-muted-strong">Pulse is working</p>
             </div>
+          </>
+        )}
+      </div>
 
-            <div className="space-y-3">
-              <div className="rounded-xl bg-sage-light/40 p-4 ring-1 ring-inset ring-sage/10">
-                <p className="text-xs text-sage/70">This week</p>
-                <p className="mt-0.5 text-2xl font-bold text-sage">{starts}</p>
-                <p className="text-xs text-sage/60">successful starts</p>
+      {tasks.length === 0 ? (
+        <EmptyState
+          title="No tasks yet"
+          description="Say one thing you want help starting."
+          action={<Link href="/tasks/new"><Button>Create a task</Button></Link>}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* ── Left: task list (2 cols) ─────────────────── */}
+          <div className="lg:col-span-2 space-y-4">
+
+            {/* Primary focus module */}
+            {primaryTask && (
+              <div className="relative overflow-hidden rounded-3xl border-2 border-sage/25 bg-surface-raised p-8 transition-all duration-300 hover:border-sage/40">
+                {/* Ambient sage wash */}
+                <div
+                  className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-sage/6 blur-3xl"
+                  aria-hidden
+                />
+
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span
+                      className={`h-2 w-2 rounded-full ${energyAccent[primaryTask.energyRequired] ?? "bg-sage"}`}
+                      aria-hidden
+                    />
+                    <p className="eyebrow">Active focus</p>
+                  </div>
+
+                  <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground leading-tight text-balance">
+                    {primaryTask.title}
+                  </h2>
+
+                  <p className="mt-2 text-xs text-muted">
+                    {energyLabel[primaryTask.energyRequired] ?? formatLabel(primaryTask.energyRequired)}
+                  </p>
+
+                  {/* Next step highlight */}
+                  {primaryTask.currentNextStep && (
+                    <div className="mt-6 rounded-2xl bg-amber-light/50 border border-amber/15 px-5 py-4">
+                      <p className="eyebrow text-amber/70 mb-2">Current next step</p>
+                      <p className="text-sm font-medium text-foreground leading-relaxed">
+                        {primaryTask.currentNextStep}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* CTA row */}
+                  <div className="mt-7 flex items-center gap-5">
+                    <button
+                      onClick={() => router.push(`/stuck/${primaryTask.id}`)}
+                      className="inline-flex items-center justify-center rounded-full bg-foreground px-7 h-11 text-sm font-semibold text-background transition-all duration-200 hover:bg-ink/80 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/40"
+                    >
+                      I&rsquo;m stuck
+                    </button>
+                    <span className="text-xs text-muted hidden sm:block">
+                      Pulse finds your next tiny step
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Other tasks */}
+            {otherTasks.map((task) => (
+              <div
+                key={task.id}
+                className="flex items-center gap-4 rounded-2xl border border-border bg-surface-raised px-6 py-5 transition-all duration-200 hover:border-sage/25 hover:shadow-sm"
+              >
+                <span
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${energyAccent[task.energyRequired] ?? "bg-sage"}`}
+                  aria-hidden
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-foreground truncate">{task.title}</h3>
+                  {task.currentNextStep && (
+                    <p className="mt-0.5 text-xs text-muted truncate">
+                      {task.currentNextStep}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => router.push(`/stuck/${task.id}`)}
+                  className="shrink-0 inline-flex items-center justify-center rounded-full border border-border px-4 h-8 text-xs font-medium text-muted-strong transition-all duration-150 hover:border-sage/30 hover:text-sage hover:bg-sage-light/40 active:scale-[0.97]"
+                >
+                  I&rsquo;m stuck
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Right: Pulse panel (1 col) ───────────────── */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8 rounded-3xl border border-border bg-surface p-6 space-y-5">
+              {/* Header */}
+              <div className="flex items-center gap-3">
+                {/* Pulse mark */}
+                <span className="relative flex h-8 w-8 items-center justify-center shrink-0" aria-hidden>
+                  <span className="absolute inset-0 rounded-full border border-sage/25" />
+                  <span className="absolute inset-[5px] rounded-full border border-sage/40" />
+                  <span className="h-2 w-2 rounded-full bg-sage animate-breathe" />
+                </span>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Today&rsquo;s Pulse</h3>
+                  <p className="text-xs text-muted">
+                    {starts > 0 ? `${starts} start${starts !== 1 ? "s" : ""} this week` : "Ready when you are"}
+                  </p>
+                </div>
               </div>
 
-              {nextStepTask?.currentNextStep && (
-                <div className="rounded-xl bg-amber-light/30 p-4 ring-1 ring-inset ring-amber/10">
-                  <p className="text-xs text-amber/70">Current next step</p>
-                  <p className="mt-1 text-sm font-medium text-charcoal-700 leading-snug">{nextStepTask.currentNextStep}</p>
-                  <p className="mt-0.5 text-xs text-charcoal-500 truncate">{nextStepTask.title}</p>
-                </div>
-              )}
+              {/* Weekly starts */}
+              <div className="rounded-2xl bg-sage-light/50 border border-sage/12 p-4">
+                <p className="eyebrow text-sage/70 mb-1">Successful starts</p>
+                <p className="font-serif text-4xl font-bold text-sage">{starts}</p>
+                <p className="text-xs text-sage/60 mt-1">this week</p>
+              </div>
 
-              {wai !== null && tasks.length > 0 && (
-                <div className="rounded-xl bg-calm-light/30 p-4 ring-1 ring-inset ring-calm/10">
-                  <p className="text-xs text-calm/70">Pulse rhythm</p>
-                  <p className="mt-1 text-sm text-charcoal-700 leading-relaxed">
-                    {wai} check-in{wai !== 1 ? "s" : ""} this week. {starts} turned into action.
-                  </p>
+              {/* Next step callout */}
+              {primaryTask?.currentNextStep && (
+                <div className="rounded-2xl bg-amber-light/40 border border-amber/12 p-4">
+                  <p className="eyebrow text-amber/70 mb-2">Current next step</p>
+                  <p className="text-sm font-medium text-foreground leading-snug">{primaryTask.currentNextStep}</p>
+                  <p className="mt-1 text-xs text-muted truncate">{primaryTask.title}</p>
                 </div>
               )}
 
               {starts === 0 && (
-                <div className="rounded-xl bg-calm-light/30 p-4 ring-1 ring-inset ring-calm/10">
-                  <p className="text-xs text-calm/70 leading-relaxed">
-                    No pressure. Pulse is here when something feels stuck.
-                  </p>
-                </div>
+                <p className="text-xs text-muted leading-relaxed border-t border-border pt-4">
+                  No pressure. Pulse is here when something feels stuck.
+                </p>
               )}
-            </div>
 
-            <div className="mt-4 pt-4 border-t border-charcoal-100">
-              <p className="text-[10px] text-charcoal-400 leading-relaxed">
+              <p className="text-[10px] text-muted border-t border-border pt-4 leading-relaxed">
                 Each &ldquo;Start&rdquo; is a win. Pulse tracks your rhythm, not your output.
               </p>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
