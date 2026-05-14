@@ -57,26 +57,27 @@ export async function POST(request: Request) {
       data.preferredChannel = body.preferredChannel;
     }
 
-    if (body.scheduledStart !== undefined) {
-      const d = new Date(body.scheduledStart);
+    if (body.scheduledStart !== undefined && body.scheduledStart !== null && body.scheduledStart !== "") {
+      const d = new Date(body.scheduledStart as string);
       if (isNaN(d.getTime())) {
         return badRequest("scheduledStart must be a valid ISO date string.");
       }
-      data.windowStart = d;
+      data.windowStart = d.toISOString();
     }
 
-    if (body.scheduledEnd !== undefined) {
-      const d = new Date(body.scheduledEnd);
+    if (body.scheduledEnd !== undefined && body.scheduledEnd !== null && body.scheduledEnd !== "") {
+      const d = new Date(body.scheduledEnd as string);
       if (isNaN(d.getTime())) {
         return badRequest("scheduledEnd must be a valid ISO date string.");
       }
-      data.windowEnd = d;
+      data.windowEnd = d.toISOString();
     }
 
     const task = await prisma.task.create({ data: data as never });
     return created(task);
   } catch (err) {
-    console.error("POST /api/tasks failed:", err);
-    return serverError("Failed to create task.");
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("POST /api/tasks failed:", message);
+    return serverError(`Failed to create task: ${message}`);
   }
 }

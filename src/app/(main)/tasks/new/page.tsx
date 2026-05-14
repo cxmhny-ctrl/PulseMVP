@@ -44,10 +44,18 @@ export default function NewTask() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error("Failed to create task.");
+      if (!res.ok) {
+        let msg = "Failed to create task.";
+        try {
+          const errData = await res.json();
+          if (errData?.error) msg = errData.error;
+        } catch { /* use default */ }
+        throw new Error(msg);
+      }
       router.push("/dashboard");
-    } catch {
-      setError("Could not create task. Try again.");
+    } catch (err) {
+      console.error("Task creation failed:", err);
+      setError((err as Error).message || "Could not create task. Try again.");
       setSaving(false);
     }
   }
