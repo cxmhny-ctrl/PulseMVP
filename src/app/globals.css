@@ -88,12 +88,12 @@
   }
 
   .timeline-dot {
-    @apply relative pl-6 pb-6 last:pb-0;
+    @apply relative pl-7 pb-6 last:pb-0;
   }
 
   .timeline-dot::before {
     content: "";
-    @apply absolute left-[7px] top-[22px] bottom-0 w-px bg-charcoal-100;
+    @apply absolute left-[9px] top-[24px] bottom-0 w-0.5 bg-charcoal-100;
   }
 
   .timeline-dot:last-child::before {
@@ -102,11 +102,11 @@
 
   .timeline-dot::after {
     content: "";
-    @apply absolute left-[2px] top-1 w-[11px] h-[11px] rounded-full border border-charcoal-300 bg-white;
+    @apply absolute left-[2px] top-1.5 w-[15px] h-[15px] rounded-full border-2 border-charcoal-300/60 bg-white;
   }
 
   .timeline-dot-active::after {
-    @apply border-sage/40 bg-sage-light;
+    @apply border-sage/30 bg-sage-light;
   }
 
   .text-balance {

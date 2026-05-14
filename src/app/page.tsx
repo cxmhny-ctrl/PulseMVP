@@ -1,71 +1,73 @@
 export default function Home() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-warm-paper px-4 text-center">
-      {/* Ambient warm glow */}
+      {/* Ambient warm glow field */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="relative flex h-[500px] w-[500px] items-center justify-center">
-          <div className="absolute inset-0 animate-pulse-ring rounded-full bg-sage/8" style={{ animationDelay: "0s" }} />
-          <div className="absolute inset-0 animate-pulse-ring rounded-full bg-sage/5" style={{ animationDelay: "0.7s" }} />
-          <div className="absolute inset-0 animate-pulse-ring rounded-full bg-amber/5" style={{ animationDelay: "1.4s" }} />
-        </div>
+        <div className="h-[600px] w-[600px] rounded-full bg-sage/6 blur-3xl animate-glow" />
+        <div className="absolute h-[400px] w-[400px] rounded-full bg-amber/4 blur-2xl animate-glow" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Content */}
+      {/* Hero text */}
       <div className="relative z-10">
         <p className="text-xs uppercase tracking-[0.2em] text-charcoal-500 mb-4">
           For ADHD minds
         </p>
-        <h1 className="text-4xl font-bold tracking-tight text-charcoal-900">
+        <h1 className="text-5xl font-bold tracking-tight text-charcoal-900">
           Start when you&apos;re stuck
         </h1>
-        <p className="mt-4 max-w-md text-lg leading-relaxed text-charcoal-700">
+        <p className="mt-4 max-w-md mx-auto text-lg leading-relaxed text-charcoal-700">
           Pulse gives you the next tiny step. No planning. No shame.
         </p>
       </div>
 
-      {/* StuckPath visual */}
-      <div className="relative z-10 mt-14 flex flex-col sm:flex-row items-center gap-3 sm:gap-0">
-        {/* Step 1: Stuck */}
-        <div className="flex flex-col items-center gap-2 sm:flex-1">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-coral/15 bg-coral-light/60 shadow-[inset_0_1px_0_rgba(212,105,94,0.1)]">
-            <span className="text-sm font-semibold text-coral/80">Stuck</span>
+      {/* Product metaphor: larger immersive StuckPath */}
+      <div className="relative z-10 mt-16">
+        {/* Ambient ring field behind the path */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none">
+          <div className="h-72 w-72 rounded-full border border-sage/5 bg-sage/3 blur-xl" />
+        </div>
+
+        <div className="relative flex items-center justify-center gap-3 sm:gap-6">
+          {/* Step 1: Stuck */}
+          <div className="flex flex-col items-center gap-3 w-24 sm:w-28">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-coral/15 bg-coral-light/60 shadow-[inset_0_1px_0_rgba(212,105,94,0.1)]">
+              <span className="text-sm font-semibold text-coral/80">Stuck</span>
+            </div>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500 h-8 flex items-center text-center leading-tight">
+              You are here
+            </span>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500">
-            You are here
-          </span>
-        </div>
 
-        {/* Connector */}
-        <div className="sm:flex-1 sm:max-w-16 flex flex-col items-center">
-          <span className="hidden sm:block h-px w-full bg-gradient-to-r from-coral/20 via-sage/40 to-transparent" />
-          <span className="sm:hidden h-6 w-px bg-gradient-to-b from-coral/20 via-sage/40 to-transparent" />
-        </div>
-
-        {/* Step 2: Tiny step */}
-        <div className="flex flex-col items-center gap-2 sm:flex-1">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-sage/20 bg-sage-light shadow-[inset_0_1px_0_rgba(74,155,127,0.1)]">
-            <span className="text-sm font-semibold text-sage/80">Step</span>
+          {/* Connector 1 */}
+          <div className="flex items-center justify-center w-12 sm:w-16 shrink-0">
+            <div className="h-px w-full bg-gradient-to-r from-coral/20 via-sage/40 to-sage/30" />
           </div>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500">
-            Next tiny step
-          </span>
-        </div>
 
-        {/* Connector */}
-        <div className="sm:flex-1 sm:max-w-16 flex flex-col items-center">
-          <span className="hidden sm:block h-px w-full bg-gradient-to-r from-sage/30 via-sage/50 to-transparent" />
-          <span className="sm:hidden h-6 w-px bg-gradient-to-b from-sage/30 via-sage/50 to-transparent" />
-        </div>
-
-        {/* Step 3: Started */}
-        <div className="flex flex-col items-center gap-2 sm:flex-1">
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-sage/25 bg-sage-light shadow-[inset_0_1px_0_rgba(74,155,127,0.15)]">
-            <span className="text-sm font-semibold text-sage">Done</span>
-            <div className="absolute -inset-1 rounded-2xl bg-sage/5 blur-md animate-breathe" />
+          {/* Step 2: Tiny step */}
+          <div className="flex flex-col items-center gap-3 w-24 sm:w-28">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-sage/20 bg-sage-light shadow-[inset_0_1px_0_rgba(74,155,127,0.1)]">
+              <span className="text-sm font-semibold text-sage/80">Step</span>
+            </div>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500 h-8 flex items-center text-center leading-tight">
+              Next tiny step
+            </span>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500">
-            Started
-          </span>
+
+          {/* Connector 2 */}
+          <div className="flex items-center justify-center w-12 sm:w-16 shrink-0">
+            <div className="h-px w-full bg-gradient-to-r from-sage/30 via-sage/50 to-sage/40" />
+          </div>
+
+          {/* Step 3: Started */}
+          <div className="flex flex-col items-center gap-3 w-24 sm:w-28">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-sage/25 bg-sage-light shadow-[inset_0_1px_0_rgba(74,155,127,0.15)]">
+              <span className="text-sm font-semibold text-sage">Done</span>
+              <div className="absolute -inset-1 rounded-2xl bg-sage/5 blur-md animate-breathe" />
+            </div>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-charcoal-500 h-8 flex items-center text-center leading-tight">
+              Started
+            </span>
+          </div>
         </div>
       </div>
 
