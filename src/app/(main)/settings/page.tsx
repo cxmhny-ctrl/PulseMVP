@@ -86,7 +86,7 @@ export default function Settings() {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+      <h1 className="text-xl font-semibold text-slate-100 mb-6">
         Settings
       </h1>
 
@@ -121,12 +121,12 @@ export default function Settings() {
             />
           </div>
 
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-slate-500">
             Channel: in-app only. SMS, notifications, and widgets coming later.
           </p>
 
           {saved && (
-            <p className="text-sm text-pulse-600 dark:text-pulse-400 font-medium">
+            <p className="text-sm text-emerald-400 font-medium">
               Settings saved.
             </p>
           )}
@@ -142,7 +142,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-600">
+      <p className="mt-8 text-center text-xs text-slate-600">
         Pulse is a support tool, not a medical device or crisis service.
         If you&apos;re in crisis, contact a qualified professional.
       </p>

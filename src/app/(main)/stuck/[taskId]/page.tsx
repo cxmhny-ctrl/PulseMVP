@@ -7,6 +7,7 @@ import Card from "@/components/ui/Card";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import Select from "@/components/ui/Select";
+import { formatLabel } from "@/lib/labels";
 
 type Stage = "intake" | "generating" | "result" | "done";
 
@@ -119,21 +120,21 @@ export default function StuckMode() {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+      <h1 className="text-xl font-semibold text-slate-100 mb-2">
         Stuck Mode
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      <p className="text-sm text-slate-400 mb-6">
         {taskTitle}
       </p>
 
       <Card>
         {stage === "intake" && (
           <div className="space-y-5">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-slate-300">
               What feels stuck?
             </p>
             <textarea
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:border-pulse-500 focus:ring-1 focus:ring-pulse-500 focus:outline-none resize-none"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500/50 focus:outline-none focus:ring-0 resize-none"
               rows={2}
               placeholder="Describe what's blocking you (optional)"
               value={stuckDescription}
@@ -158,18 +159,18 @@ export default function StuckMode() {
         {stage === "result" && step && (
           <div className="space-y-5">
             <div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+              <p className="text-xs uppercase tracking-wide text-slate-500">
                 Next step
               </p>
-              <p className="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">
+              <p className="mt-1 text-lg font-semibold text-slate-100">
                 {showEasier ? step.easierVersion : step.nextStep}
               </p>
             </div>
 
-            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-4 text-xs text-slate-400">
               <span>~{step.estimatedMinutes} min</span>
               <span>&middot;</span>
-              <span>{step.frictionType.replace(/_/g, " ")}</span>
+              <span>{formatLabel(step.frictionType)}</span>
             </div>
 
             {!showEasier && (
@@ -210,10 +211,10 @@ export default function StuckMode() {
 
         {stage === "done" && (
           <div className="space-y-4 text-center">
-            <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <p className="text-lg font-medium text-slate-100">
               Starting a 2-minute pulse.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-slate-400">
               Stop when the timer ends.
             </p>
             <Button onClick={() => router.push("/dashboard")} variant="secondary">

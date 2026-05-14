@@ -8,6 +8,7 @@ import Card from "@/components/ui/Card";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
+import { formatLabel } from "@/lib/labels";
 
 interface Task {
   id: string;
@@ -79,20 +80,28 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Dashboard
-          </h1>
-          {wai !== null && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {wai} intervention{wai !== 1 ? "s" : ""} this week
-            </p>
-          )}
-        </div>
+        <h1 className="text-xl font-semibold text-slate-100">
+          Dashboard
+        </h1>
         <Link href="/tasks/new">
           <Button>+ New task</Button>
         </Link>
       </div>
+
+      {wai !== null && (
+        <Card className="border-emerald-900/40 bg-emerald-950/40">
+          <div className="flex items-center gap-3">
+            <span className="flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            </span>
+            <p className="text-sm text-slate-200">
+              <span className="font-semibold text-emerald-300">{wai}</span>{" "}
+              intervention{wai !== 1 ? "s" : ""} this week
+            </p>
+          </div>
+        </Card>
+      )}
 
       {tasks.length === 0 ? (
         <EmptyState
@@ -110,15 +119,15 @@ export default function Dashboard() {
             <Card key={task.id}>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <h3 className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                  <h3 className="font-medium text-slate-100 truncate">
                     {task.title}
                   </h3>
-                  <div className="mt-1 flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5">
-                      {task.energyRequired} energy
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-medium text-slate-400">
+                      {formatLabel(task.energyRequired)}
                     </span>
                     {task.currentNextStep && (
-                      <span className="truncate max-w-xs">
+                      <span className="truncate max-w-xs text-slate-400">
                         Next: {task.currentNextStep}
                       </span>
                     )}

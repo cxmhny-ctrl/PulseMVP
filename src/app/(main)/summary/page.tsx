@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
+import { formatLabel } from "@/lib/labels";
 
 interface Summary {
   weekStart: string;
@@ -46,32 +47,48 @@ export default function SummaryPage() {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+      <h1 className="text-xl font-semibold text-slate-100 mb-6">
         Weekly summary
       </h1>
 
       <Card>
         <div className="text-center mb-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-slate-400">
             {summary.weekStart} → {summary.weekEnd}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="text-center p-3 rounded-lg bg-pulse-50 dark:bg-pulse-900">
-            <p className="text-2xl font-bold text-pulse-700 dark:text-pulse-300">
+          <div className="text-center p-3 rounded-lg bg-emerald-950/40">
+            <p className="text-2xl font-bold text-emerald-300">
               {summary.weeklyActiveInterventions}
             </p>
-            <p className="text-xs text-pulse-600 dark:text-pulse-400">
+            <p className="text-xs text-emerald-400">
               Interventions
             </p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-900">
-            <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+          <div className="text-center p-3 rounded-lg bg-blue-950/40">
+            <p className="text-2xl font-bold text-blue-300">
               {summary.successfulTransitions}
             </p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">
+            <p className="text-xs text-blue-400">
               Starts
+            </p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-slate-800">
+            <p className="text-2xl font-bold text-slate-300">
+              {summary.dismissals}
+            </p>
+            <p className="text-xs text-slate-400">
+              Dismissed
+            </p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-slate-800">
+            <p className="text-2xl font-bold text-slate-300">
+              {formatLabel(summary.bestChannel)}
+            </p>
+            <p className="text-xs text-slate-400">
+              Best channel
             </p>
           </div>
         </div>
@@ -79,42 +96,42 @@ export default function SummaryPage() {
         <div className="space-y-2 text-sm">
           {summary.topFrictionType && (
             <div className="flex justify-between">
-              <span className="text-gray-500 dark:text-gray-400">Top friction</span>
-              <span className="text-gray-900 dark:text-gray-100 font-medium">
-                {summary.topFrictionType.replace(/_/g, " ")}
+              <span className="text-slate-400">Top friction</span>
+              <span className="text-slate-100 font-medium">
+                {formatLabel(summary.topFrictionType)}
               </span>
             </div>
           )}
           {summary.bestChannel && (
             <div className="flex justify-between">
-              <span className="text-gray-500 dark:text-gray-400">Best channel</span>
-              <span className="text-gray-900 dark:text-gray-100 font-medium">
-                {summary.bestChannel}
+              <span className="text-slate-400">Best channel</span>
+              <span className="text-slate-100 font-medium">
+                {formatLabel(summary.bestChannel)}
               </span>
             </div>
           )}
           <div className="flex justify-between">
-            <span className="text-gray-500 dark:text-gray-400">Dismissed</span>
-            <span className="text-gray-900 dark:text-gray-100 font-medium">
+            <span className="text-slate-400">Dismissed</span>
+            <span className="text-slate-100 font-medium">
               {summary.dismissals}
             </span>
           </div>
         </div>
 
         {summary.summaryText && (
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <div className="mt-6 pt-6 border-t border-slate-800">
+            <p className="text-sm text-slate-300 leading-relaxed">
               {summary.summaryText}
             </p>
           </div>
         )}
 
         {summary.recommendedAdjustment && (
-          <div className="mt-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-900">
-            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+          <div className="mt-4 p-3 rounded-lg bg-slate-800/50">
+            <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">
               Suggestion
             </p>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-sm text-slate-300">
               {summary.recommendedAdjustment}
             </p>
           </div>

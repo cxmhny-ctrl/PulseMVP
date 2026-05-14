@@ -67,7 +67,7 @@ export default function NewTask() {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+      <h1 className="text-xl font-semibold text-slate-100 mb-6 text-center">
         New task
       </h1>
       <Card>
@@ -89,14 +89,14 @@ export default function NewTask() {
 
           <div className="flex gap-4">
             <Input
-              label="Scheduled start (optional)"
+              label="Start time"
               type="datetime-local"
               autoComplete="off"
               value={scheduledStart}
               onChange={(e) => setScheduledStart(e.target.value)}
             />
             <Input
-              label="Scheduled end (optional)"
+              label="End time"
               type="datetime-local"
               autoComplete="off"
               value={scheduledEnd}
@@ -104,7 +104,7 @@ export default function NewTask() {
             />
           </div>
 
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-slate-500">
             Channel: in-app only for now. SMS, notifications, and widgets
             coming later.
           </p>

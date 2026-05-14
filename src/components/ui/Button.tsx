@@ -2,7 +2,7 @@
 
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -10,11 +10,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-pulse-600 text-white hover:bg-pulse-700 focus:ring-pulse-500",
+    "bg-emerald-600 text-white hover:bg-emerald-500 active:bg-emerald-700 focus-visible:ring-emerald-500/50",
   secondary:
-    "border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900",
+    "border border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-slate-100 focus-visible:ring-slate-500/50",
   ghost:
-    "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800",
+    "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 focus-visible:ring-slate-500/50",
+  danger:
+    "bg-rose-600 text-white hover:bg-rose-500 active:bg-rose-700 focus-visible:ring-rose-500/50",
 };
 
 export default function Button({
@@ -25,7 +27,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl h-10 px-5 text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:opacity-40 disabled:pointer-events-none ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

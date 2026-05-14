@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
+import { formatLabel } from "@/lib/labels";
 
 interface Intervention {
   id: string;
@@ -17,10 +18,10 @@ interface Intervention {
   task?: { title: string };
 }
 
-const statusLabel: Record<string, { label: string; color: string }> = {
-  engaged: { label: "Started", color: "text-pulse-600 bg-pulse-50 dark:bg-pulse-900 dark:text-pulse-300" },
-  sent: { label: "Sent", color: "text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300" },
-  dismissed: { label: "Dismissed", color: "text-gray-500 bg-gray-100 dark:bg-gray-800 dark:text-gray-400" },
+const statusColor: Record<string, string> = {
+  engaged: "text-emerald-300 bg-emerald-950/40",
+  sent: "text-blue-300 bg-blue-950/40",
+  dismissed: "text-slate-300 bg-slate-800",
 };
 
 export default function Interventions() {
@@ -50,8 +51,8 @@ export default function Interventions() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+    <div className="max-w-md mx-auto">
+      <h1 className="text-xl font-semibold text-slate-100 mb-6">
         Intervention history
       </h1>
 
@@ -63,25 +64,25 @@ export default function Interventions() {
       ) : (
         <div className="space-y-3">
           {interventions.map((i) => {
-            const s = statusLabel[i.status] ?? { label: i.status, color: "text-gray-500" };
+            const c = statusColor[i.status] ?? "text-slate-300 bg-slate-800";
             return (
               <Card key={i.id}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-sm font-medium text-slate-100 truncate">
                       {i.task?.title ?? "Untitled task"}
                     </p>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <p className="mt-1 text-xs text-slate-400 truncate">
                       {i.message}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${s.color}`}
+                      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${c}`}
                     >
-                      {s.label}
+                      {formatLabel(i.status)}
                     </span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {new Date(i.createdAt).toLocaleDateString()}
                     </span>
                   </div>

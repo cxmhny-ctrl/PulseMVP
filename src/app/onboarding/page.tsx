@@ -60,19 +60,19 @@ export default function Onboarding() {
 
   const steps = [
     <>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-2xl font-bold text-slate-100">
         Welcome to Pulse
       </h2>
-      <p className="mt-2 text-gray-600 dark:text-gray-400">
+      <p className="mt-2 text-slate-300">
         Pulse helps you start when you get stuck. No complex planning. No
         shame. The next tiny step.
       </p>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
+      <p className="mt-1 text-sm text-slate-400">
         Pulse is a support tool, not a medical device or crisis service.
       </p>
     </>,
     <>
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-xl font-bold text-slate-100">
         How should Pulse talk to you?
       </h2>
       <Select
@@ -83,7 +83,7 @@ export default function Onboarding() {
       />
     </>,
     <>
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-xl font-bold text-slate-100">
         How often should Pulse check in?
       </h2>
       <Select
@@ -94,10 +94,10 @@ export default function Onboarding() {
       />
     </>,
     <>
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-xl font-bold text-slate-100">
         Quiet hours
       </h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <p className="mb-4 text-sm text-slate-400">
         Pulse won&apos;t nudge you during these hours.
       </p>
       <div className="flex gap-4">
@@ -116,10 +116,10 @@ export default function Onboarding() {
       </div>
     </>,
     <>
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-xl font-bold text-slate-100">
         Say one thing you tend to get stuck starting.
       </h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <p className="mb-4 text-sm text-slate-400">
         You can change this anytime.
       </p>
       <Input
@@ -132,7 +132,7 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
       <Card className="w-full max-w-md">
         <div className="space-y-6">{steps[step]}</div>
 
@@ -158,7 +158,7 @@ export default function Onboarding() {
             <div
               key={i}
               className={`h-1.5 w-6 rounded-full ${
-                i === step ? "bg-pulse-500" : "bg-gray-200 dark:bg-gray-700"
+                i === step ? "bg-emerald-500" : "bg-slate-800"
               }`}
             />
           ))}

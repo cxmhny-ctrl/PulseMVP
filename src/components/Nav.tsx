@@ -15,24 +15,25 @@ export default function Nav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-      <div className="mx-auto flex max-w-3xl items-center gap-1 px-4 h-12 overflow-x-auto">
+    <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-10">
+      <div className="mx-auto flex max-w-2xl items-center gap-0.5 px-4 h-12 overflow-x-auto">
         <Link
           href="/dashboard"
-          className="mr-2 text-sm font-semibold text-gray-900 dark:text-gray-100 shrink-0"
+          className="mr-3 text-sm font-semibold text-slate-100 shrink-0 tracking-tight"
         >
           Pulse
         </Link>
         {links.map((link) => {
-          const active = pathname === link.href || pathname.startsWith(link.href + "/");
+          const active =
+            pathname === link.href || pathname.startsWith(link.href + "/");
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`shrink-0 rounded-md px-2 py-1 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 active
-                  ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-900 dark:text-pulse-300"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  ? "bg-emerald-950/60 text-emerald-300"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
               }`}
             >
               {link.label}
