@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String
+  profileType String   @default("individual") @map("profile_type")
+  timezone    String   @default("America/Chicago")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  settings      UserSettings?
+  tasks         Task[]
+  interventions Intervention[]
+  stuckSessions StuckSession[]
+  summaries     WeeklySummary[]
+
+  @@map("users")
+}
+
+model UserSettings {
+  id                    String   @id @default(uuid())
+  userId                String   @unique @map("user_id")
+  supportStyle          String   @default("gentle") @map("support_style")
+  stuckSensitivity      String   @default("medium") @map("stuck_sensitivity")
+  quietHoursEnabled     Boolean  @default(true) @map("quiet_hours_enabled")
+  quietHoursStart       String   @default("22:00") @map("quiet_hours_start")
+  quietHoursEnd         String   @default("08:00") @map("quiet_hours_end")
+  voiceEnabled          Boolean  @default(true) @map("voice_enabled")
+  smsEnabled            Boolean  @default(false) @map("sms_enabled")
+  weeklySummaryEnabled  Boolean  @default(true) @map("weekly_summary_enabled")
+  widgetEnabled         Boolean  @default(true) @map("widget_enabled")
+  notificationsEnabled  Boolean  @default(true) @map("notifications_enabled")
+  smsPhoneNumber        String?  @map("sms_phone_number")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_settings")
+}
+
+model Task {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  title           String
+  status          String    @default("active")
+  source          String    @default("text")
+  currentNextStep String?   @map("current_next_step")
+  energyRequired  String    @default("medium") @map("energy_required")
+  preferredChannel String   @default("in_app") @map("preferred_channel")
+  windowStart     DateTime? @map("window_start")
+  windowEnd       DateTime? @map("window_end")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  user           User            @relation(fields: [userId], references: [id])
+  interventions  Intervention[]
+  stuckSessions  StuckSession[]
+
+  @@map("tasks")
+}
+
+model Intervention {
+  id               String    @id @default(uuid())
+  userId           String    @map("user_id")
+  taskId           String    @map("task_id")
+  triggerType      String    @map("trigger_type")
+  channel          String
+  message          String
+  status           String    @default("sent")
+  stuckProbability Float     @default(0.5) @map("stuck_probability")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  engagedAt        DateTime? @map("engaged_at")
+  dismissedAt      DateTime? @map("dismissed_at")
+
+  user         User          @relation(fields: [userId], references: [id])
+  task         Task          @relation(fields: [taskId], references: [id])
+  stuckSession StuckSession?
+
+  @@map("interventions")
+}
+
+model StuckSession {
+  id                  String    @id @default(uuid())
+  userId              String    @map("user_id")
+  taskId              String    @map("task_id")
+  interventionId      String?   @unique @map("intervention_id")
+  inputChannel        String    @default("in_app") @map("input_channel")
+  frictionType        String?   @map("friction_type")
+  userState           String?   @map("user_state")
+  generatedFirstStep  String?   @map("generated_first_step")
+  acceptedFirstStep   Boolean   @default(false) @map("accepted_first_step")
+  started             Boolean   @default(false)
+  completed           Boolean?
+  durationSeconds     Int?      @map("duration_seconds")
+  selfReportedHelpful Boolean?  @map("self_reported_helpful")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  endedAt             DateTime? @map("ended_at")
+
+  user          User          @relation(fields: [userId], references: [id])
+  task          Task          @relation(fields: [taskId], references: [id])
+  intervention  Intervention? @relation(fields: [interventionId], references: [id])
+
+  @@map("stuck_sessions")
+}
+
+model WeeklySummary {
+  id                      String   @id @default(uuid())
+  userId                  String   @map("user_id")
+  weekStart               String   @map("week_start")
+  weekEnd                 String   @map("week_end")
+  weeklyActiveInterventions Int     @default(0) @map("weekly_active_interventions")
+  successfulTransitions   Int      @default(0) @map("successful_transitions")
+  dismissals              Int      @default(0)
+  falsePositiveReports    Int      @default(0) @map("false_positive_reports")
+  topFrictionType         String?  @map("top_friction_type")
+  bestChannel             String?  @map("best_channel")
+  recommendedAdjustment   String?  @map("recommended_adjustment")
+  summaryText             String?  @map("summary_text")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("weekly_summaries")
+}
