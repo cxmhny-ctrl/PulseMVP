@@ -146,7 +146,7 @@ export default function StuckMode() {
               <textarea
                 className="w-full rounded-xl border border-slate-800/60 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500/40 focus:outline-none focus:ring-0 resize-none"
                 rows={2}
-                placeholder="Describe what\u2019s blocking you (optional)"
+                placeholder="Describe what's blocking you (optional)"
                 value={stuckDescription}
                 onChange={(e) => setStuckDescription(e.target.value)}
               />
@@ -257,7 +257,7 @@ export default function StuckMode() {
                   Started
                 </p>
                 <p className="mt-1 text-sm text-slate-400">
-                  You\u2019re doing it. Come back when you\u2019re ready.
+                  You're doing it. Come back when you're ready.
                 </p>
               </div>
               <Button onClick={() => router.push("/dashboard")} variant="secondary">
