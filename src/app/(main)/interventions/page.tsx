@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
+import TimelineItem from "@/components/TimelineItem";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -45,11 +46,11 @@ export default function Interventions() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="max-w-md mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-slate-100 mb-1">
+    <div className="max-w-lg mx-auto animate-fade-in">
+      <h1 className="text-xl font-semibold text-charcoal-900 mb-1">
         History
       </h1>
-      <p className="text-xs text-slate-500 mb-6">
+      <p className="text-sm text-charcoal-500 mb-6">
         A calm log of the moments you started.
       </p>
 
@@ -63,17 +64,14 @@ export default function Interventions() {
           {interventions.map((i) => {
             const isStarted = i.status === "engaged";
             return (
-              <div
-                key={i.id}
-                className={`timeline-item ${isStarted ? "timeline-item-active" : ""}`}
-              >
+              <TimelineItem key={i.id} active={isStarted}>
                 <Card>
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-100 truncate">
+                      <p className="text-sm font-medium text-charcoal-900 truncate">
                         {i.task?.title ?? "Untitled task"}
                       </p>
-                      <p className="mt-1 text-xs text-slate-400 truncate">
+                      <p className="mt-1 text-xs text-charcoal-500 truncate">
                         {i.message}
                       </p>
                     </div>
@@ -81,15 +79,15 @@ export default function Interventions() {
                       <span
                         className={`status-badge ${
                           i.status === "engaged"
-                            ? "status-badge-success"
+                            ? "status-badge-started"
                             : i.status === "sent"
-                            ? "status-badge-info"
-                            : "status-badge-muted"
+                            ? "status-badge-nudged"
+                            : "status-badge-dismissed"
                         }`}
                       >
                         {formatLabel(i.status)}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-charcoal-500">
                         {new Date(i.createdAt).toLocaleDateString(undefined, {
                           month: "short",
                           day: "numeric",
@@ -98,7 +96,7 @@ export default function Interventions() {
                     </div>
                   </div>
                 </Card>
-              </div>
+              </TimelineItem>
             );
           })}
         </div>

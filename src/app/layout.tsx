@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pulse — ADHD Stuck-to-Action Companion",
+  title: "Pulse \u2014 ADHD Stuck-to-Action Companion",
   description:
-    "Pulse helps you start when you're stuck. No complex planning. No shame. The next tiny step.",
+    "Pulse helps you start when you\u2019re stuck. No complex planning. No shame. The next tiny step.",
 };
 
 export default function RootLayout({
@@ -20,8 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
-      <body className="min-h-screen antialiased">{children}</body>
+    <html lang="en" className={inter.variable}>
+      <body className="min-h-screen antialiased font-sans">
+        {children}
+      </body>
     </html>
   );
 }

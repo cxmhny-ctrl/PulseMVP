@@ -85,18 +85,18 @@ export default function Settings() {
     return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="max-w-md mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-slate-100 mb-1">
+    <div className="max-w-lg mx-auto animate-fade-in">
+      <h1 className="text-xl font-semibold text-charcoal-900 mb-1">
         Settings
       </h1>
-      <p className="text-xs text-slate-500 mb-6">
+      <p className="text-sm text-charcoal-500 mb-6">
         Tune how Pulse checks in.
       </p>
 
       <Card>
         <div className="space-y-5">
           {/* Tone section */}
-          <div className="space-y-4 pb-5 border-b border-slate-800/60">
+          <div className="space-y-4 pb-5 border-b border-charcoal-100">
             <Select
               label="Support style"
               options={styleOptions}
@@ -112,12 +112,12 @@ export default function Settings() {
           </div>
 
           {/* Quiet hours section */}
-          <div className="space-y-4 pb-5 border-b border-slate-800/60">
+          <div className="space-y-4 pb-5 border-b border-charcoal-100">
             <div>
-              <p className="text-sm font-medium text-slate-300">
+              <p className="text-sm font-medium text-charcoal-900">
                 Quiet hours
               </p>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-charcoal-500">
                 Pulse won&apos;t send nudges during these hours.
               </p>
             </div>
@@ -138,7 +138,7 @@ export default function Settings() {
           </div>
 
           {saved && (
-            <p className="text-sm font-medium text-emerald-400">
+            <p className="text-sm font-medium text-sage">
               Settings saved.
             </p>
           )}
@@ -154,7 +154,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      <p className="mt-8 text-center text-xs text-slate-600">
+      <p className="mt-8 text-center text-xs text-charcoal-500">
         Pulse is a support tool, not a medical device or crisis service.
         If you&apos;re in crisis, contact a qualified professional.
       </p>

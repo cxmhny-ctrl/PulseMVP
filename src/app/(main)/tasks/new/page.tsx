@@ -66,15 +66,15 @@ export default function NewTask() {
   }
 
   return (
-    <div className="max-w-md mx-auto animate-fade-in">
-      <h1 className="text-xl font-semibold text-slate-100 mb-6">
+    <div className="max-w-lg mx-auto animate-fade-in">
+      <h1 className="text-xl font-semibold text-charcoal-900 mb-6">
         New task
       </h1>
 
       <Card>
         <form onSubmit={handleSubmit}>
           {/* What section */}
-          <div className="space-y-4 pb-5 border-b border-slate-800/60">
+          <div className="space-y-4 pb-5 border-b border-charcoal-100">
             <Input
               label="What do you want to start?"
               placeholder="e.g. Clean kitchen"
@@ -90,13 +90,13 @@ export default function NewTask() {
             />
           </div>
 
-          {/* Optional scheduling section */}
-          <div className="space-y-3 py-5 border-b border-slate-800/60">
+          {/* Optional scheduling */}
+          <div className="space-y-3 py-5 border-b border-charcoal-100">
             <div>
-              <p className="text-sm font-medium text-slate-300">
+              <p className="text-sm font-medium text-charcoal-900">
                 Scheduling
               </p>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-charcoal-500">
                 Optional. Pulse won&apos;t nudge you outside this window.
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function NewTask() {
         </form>
       </Card>
 
-      <p className="mt-6 text-center text-xs text-slate-600">
+      <p className="mt-6 text-center text-xs text-charcoal-500">
         Channel: in-app only for now. SMS, notifications, and widgets coming later.
       </p>
     </div>

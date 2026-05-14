@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Nav from "./Nav";
+import Sidebar from "./Sidebar";
 
 interface AppShellProps {
   children: ReactNode;
@@ -7,11 +7,14 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="relative min-h-screen bg-slate-950">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,theme(colors.emerald.500/0.08),transparent_55%)]" />
-      <div className="pointer-events-none fixed bottom-0 inset-x-0 h-64 z-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,theme(colors.emerald.500/0.04),transparent_70%)]" />
-      <Nav />
-      <main className="relative z-10 mx-auto max-w-2xl px-4 py-8">{children}</main>
+    <div className="flex min-h-screen bg-warm-paper">
+      <Sidebar />
+      {/* Desktop: offset for sidebar. Mobile: offset for bottom nav */}
+      <main className="flex-1 lg:pl-56 pb-16 lg:pb-0">
+        <div className="mx-auto max-w-5xl px-4 py-8 lg:px-8 lg:py-10">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

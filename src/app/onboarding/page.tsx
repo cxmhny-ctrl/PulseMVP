@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 
@@ -60,19 +59,19 @@ export default function Onboarding() {
 
   const steps = [
     <div key={0} className="space-y-3">
-      <h2 className="text-2xl font-bold text-slate-100">
+      <h2 className="text-2xl font-bold text-charcoal-900">
         Welcome to Pulse
       </h2>
-      <p className="text-slate-300 leading-relaxed">
+      <p className="text-charcoal-700 leading-relaxed">
         Pulse helps you start when you get stuck. No complex planning. No
         shame. The next tiny step.
       </p>
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-charcoal-500">
         Pulse is a support tool, not a medical device or crisis service.
       </p>
     </div>,
     <div key={1} className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-100">
+      <h2 className="text-xl font-bold text-charcoal-900">
         How should Pulse talk to you?
       </h2>
       <Select
@@ -83,7 +82,7 @@ export default function Onboarding() {
       />
     </div>,
     <div key={2} className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-100">
+      <h2 className="text-xl font-bold text-charcoal-900">
         How often should Pulse check in?
       </h2>
       <Select
@@ -94,10 +93,10 @@ export default function Onboarding() {
       />
     </div>,
     <div key={3} className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-100">
+      <h2 className="text-xl font-bold text-charcoal-900">
         Quiet hours
       </h2>
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-charcoal-500">
         Pulse won&apos;t nudge you during these hours.
       </p>
       <div className="flex gap-4">
@@ -116,10 +115,10 @@ export default function Onboarding() {
       </div>
     </div>,
     <div key={4} className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-100">
+      <h2 className="text-xl font-bold text-charcoal-900">
         Say one thing you tend to get stuck starting.
       </h2>
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-charcoal-500">
         You can change this anytime.
       </p>
       <Input
@@ -132,13 +131,13 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
-      {/* Ambient glow behind card */}
+    <div className="flex min-h-screen items-center justify-center bg-warm-paper px-4">
+      {/* Ambient warm glow */}
       <div className="pointer-events-none fixed inset-0 flex items-center justify-center">
-        <div className="h-[400px] w-[400px] rounded-full bg-emerald-500/[0.03] blur-3xl animate-glow" />
+        <div className="h-[400px] w-[400px] rounded-full bg-sage/5 blur-3xl animate-glow" />
       </div>
 
-      <Card className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md surface-card shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
         <div className="space-y-6">{steps[step]}</div>
 
         <div className="mt-8 flex justify-between">
@@ -164,15 +163,15 @@ export default function Onboarding() {
               key={i}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 i === step
-                  ? "w-8 bg-emerald-500"
+                  ? "w-8 bg-sage"
                   : i < step
-                  ? "w-1.5 bg-emerald-500/40"
-                  : "w-1.5 bg-slate-800"
+                  ? "w-1.5 bg-sage/40"
+                  : "w-1.5 bg-charcoal-100"
               }`}
             />
           ))}
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

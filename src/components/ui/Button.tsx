@@ -10,13 +10,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-emerald-600 text-white shadow-[inset_0_1px_0_theme(colors.emerald.400/0.3)] hover:bg-emerald-500 active:bg-emerald-700 focus-visible:ring-emerald-500/50",
+    "bg-sage text-white shadow-[inset_0_1px_0_theme(colors.sage.hover)] hover:bg-sage-hover active:bg-sage/90 focus-visible:ring-sage/40",
   secondary:
-    "border border-slate-700/60 bg-slate-800/40 text-slate-300 hover:bg-slate-800 hover:text-slate-100 focus-visible:ring-slate-500/50",
+    "border border-charcoal-100 bg-white text-charcoal-700 hover:bg-charcoal-100/40 hover:text-charcoal-900 focus-visible:ring-charcoal-300/40",
   ghost:
-    "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 focus-visible:ring-slate-500/50",
+    "text-charcoal-500 hover:text-charcoal-900 hover:bg-charcoal-100/40 focus-visible:ring-charcoal-300/40",
   danger:
-    "bg-rose-600 text-white shadow-[inset_0_1px_0_theme(colors.rose.400/0.3)] hover:bg-rose-500 active:bg-rose-700 focus-visible:ring-rose-500/50",
+    "bg-coral text-white shadow-[inset_0_1px_0_theme(colors.coral.hover)] hover:bg-coral-hover active:bg-coral/90 focus-visible:ring-coral/40",
 };
 
 export default function Button({
@@ -27,7 +27,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-xl h-10 px-5 text-sm font-medium transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:opacity-40 disabled:pointer-events-none ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl h-10 px-5 text-sm font-medium transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-paper disabled:opacity-40 disabled:pointer-events-none ${variants[variant]} ${className}`}
       {...props}
     >
       {children}
