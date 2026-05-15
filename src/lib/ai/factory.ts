@@ -2,6 +2,7 @@ import type { AIProvider } from "./types";
 import { MockAIProvider } from "./mock-provider";
 import { TemplateFallbackProvider } from "./template-fallback";
 import { OpenAIProviderStub } from "./openai-stub";
+import { DeepSeekProvider } from "./deepseek-provider";
 
 let cachedProvider: AIProvider | null = null;
 
@@ -11,6 +12,9 @@ export function getAIProvider(): AIProvider {
   const configured = process.env.AI_PROVIDER || "mock";
 
   switch (configured) {
+    case "deepseek":
+      cachedProvider = new DeepSeekProvider();
+      break;
     case "openai":
       cachedProvider = new OpenAIProviderStub();
       break;

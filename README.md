@@ -13,7 +13,7 @@ ADHD stuck-to-action companion. No complex planning. No shame. The next tiny ste
 | Database (dev) | SQLite via Prisma |
 | Database (prod) | PostgreSQL (Neon / Supabase / Vercel Postgres) |
 | Styling | Tailwind CSS |
-| AI | Mock provider + template fallback (no API keys required) |
+| AI | DeepSeek Reasoner / Mock provider / Template fallback |
 
 ## Local setup
 
@@ -148,7 +148,26 @@ See `.env.example` for the full list. Required:
 | Variable | Local (SQLite) | Production (Postgres) |
 |----------|---------------|----------------------|
 | `DATABASE_URL` | `file:./dev.db` | `postgresql://user:pass@host/db` |
-| `AI_PROVIDER` | `mock` | `mock` (or `openai`) |
+| `AI_PROVIDER` | `mock` | `deepseek` (or `mock`, `fallback`) |
+| `DEEPSEEK_API_KEY` | — | Your DeepSeek API key |
+
+### DeepSeek Reasoner
+
+Pulse supports DeepSeek Reasoner for real AI-generated tiny steps. To enable:
+
+1. Get an API key from [platform.deepseek.com](https://platform.deepseek.com)
+2. Set in `.env`:
+   ```bash
+   AI_PROVIDER=deepseek
+   DEEPSEEK_API_KEY=sk-...
+   DEEPSEEK_MODEL=deepseek-reasoner
+   # DEEPSEEK_BASE_URL defaults to https://api.deepseek.com/v1
+   ```
+3. Restart the dev server
+
+If `DEEPSEEK_API_KEY` is missing, the provider falls back to template-based responses automatically. The mock provider remains the default for local development without API keys.
+
+Smoke test: `DEEPSEEK_API_KEY=sk-... npx tsx scripts/test-deepseek-provider.ts`
 
 ### Vercel deployment steps
 
